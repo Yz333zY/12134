@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Élan · 创作者社交中枢</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/manrope@5.2.8/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/noto-sans-sc@5.2.10/index.css" rel="stylesheet">
+<style>
+:root{
+  --ink-0:#07080B;--ink-1:#0C0E13;--ink-2:#12151B;--ink-3:#181C24;--ink-4:#222833;
+  --line:rgba(255,255,255,.07);--line-2:rgba(255,255,255,.13);
+  --t1:rgba(255,255,255,.94);--t2:rgba(255,255,255,.60);--t3:rgba(255,255,255,.37);
+  --amber:#FFB65C;--amber-2:#F0913A;--amber-soft:rgba(255,182,92,.13);--amber-line:rgba(255,182,92,.34);
+  --ok:#4ADE80;--danger:#F87171;
+  --r-s:8px;--r-m:12px;--r-l:16px;--r-xl:22px;
+  --ease:cubic-bezier(.2,0,0,1);
+  --font-body:"Manrope Variable",Manrope,"Noto Sans SC Variable","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --shadow:0 22px 54px rgba(0,0,0,.62);
+  --rail:76px;--side:236px;--right:328px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--ink-0);color:var(--t1);
+  font-family:var(--font-body);font-size:13.5px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;font-synthesis:none;line-break:strict;overflow-wrap:break-word;
+  overflow:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(820px 380px at 18% -10%,rgba(255,182,92,.11),transparent 68%),
+    radial-gradient(680px 340px at 90% -6%,rgba(122,142,255,.08),transparent 70%);
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+input,textarea{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(255,182,92,.28);color:#fff}
+.ico{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ico-14{width:14px;height:14px}
+.ico-20{width:20px;height:20px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.app{
+  position:relative;z-index:1;display:grid;
+  grid-template-columns:var(--rail) var(--side) minmax(0,1fr) var(--right);
+  height:100dvh;
+}
+
+.rail{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:16px 0;border-right:1px solid var(--line);background:rgba(10,11,15,.72);
+}
+.brand{
+  width:40px;height:40px;display:grid;place-items:center;border-radius:13px;margin-bottom:14px;
+  background:linear-gradient(150deg,var(--amber),var(--amber-2));
+  color:#150D03;box-shadow:0 8px 22px rgba(240,145,58,.30);
+}
+.brand svg{width:21px;height:21px;fill:none;stroke:#150D03;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rail-btn{
+  position:relative;width:44px;height:44px;display:grid;place-items:center;border-radius:13px;
+  color:var(--t3);transition:color .18s var(--ease),background .18s var(--ease),transform .18s var(--ease);
+}
+.rail-btn:hover{color:var(--t1);background:rgba(255,255,255,.055);transform:translateY(-1px)}
+.rail-btn.is-active{color:var(--amber);background:var(--amber-soft)}
+.rail-btn.is-active::after{
+  content:"";position:absolute;left:-16px;top:50%;width:3px;height:18px;border-radius:0 3px 3px 0;
+  background:var(--amber);transform:translateY(-50%);
+}
+.rail-dot{position:absolute;top:8px;right:8px;width:6px;height:6px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 2px #0A0B0F}
+.rail-spacer{flex:1}
+
+.side{
+  display:flex;flex-direction:column;gap:4px;padding:20px 14px 16px;
+  border-right:1px solid var(--line);background:rgba(9,10,14,.55);overflow-y:auto;
+}
+.side-label{
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);
+  padding:14px 10px 6px;font-weight:500;
+}
+.nav-item{
+  position:relative;display:flex;align-items:center;gap:11px;height:40px;padding:0 11px;border-radius:11px;
+  color:var(--t2);font-size:13.5px;font-weight:500;
+  transition:color .18s var(--ease),background .18s var(--ease),transform .18s var(--ease);
+}
+.nav-item:hover{color:var(--t1);background:rgba(255,255,255,.045);transform:translateX(2px)}
+.nav-item.is-active{color:var(--t1);background:rgba(255,255,255,.06)}
+.nav-item.is-active .ico{color:var(--amber)}
+.nav-item.is-active::before{
+  content:"";position:absolute;left:0;top:50%;width:2px;height:16px;border-radius:2px;
+  background:var(--amber);transform:translateY(-50%);
+}
+.nav-count{
+  margin-left:auto;min-width:20px;height:19px;padding:0 6px;border-radius:99px;display:grid;place-items:center;
+  font-size:10.5px;font-weight:600;font-variant-numeric:tabular-nums;
+  background:var(--amber-soft);color:var(--amber);
+}
+.side-card{
+  margin-top:auto;padding:13px;border-radius:var(--r-m);border:1px solid var(--line);
+  background:linear-gradient(160deg,rgba(255,182,92,.09),rgba(255,255,255,.02));
+}
+.side-card-title{font-size:12px;font-weight:600;margin:0 0 7px;display:flex;align-items:center;gap:6px;color:var(--t1)}
+.side-card p{margin:0;font-size:11.5px;line-height:1.6;color:var(--t2)}
+.kbd-row{display:flex;gap:5px;margin-top:9px;align-items:center;flex-wrap:wrap}
+kbd{
+  font-family:var(--font-body);font-size:10px;font-weight:600;color:var(--t2);
+  border:1px solid var(--line-2);border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:rgba(255,255,255,.04);
+}
+
+.center{display:grid;grid-template-rows:auto minmax(0,1fr);min-width:0;position:relative;background:rgba(7,8,11,.35)}
+.topbar{
+  position:relative;z-index:30;display:flex;align-items:center;gap:12px;
+  padding:14px 22px 13px;border-bottom:1px solid var(--line);
+  background:rgba(9,10,14,.82);backdrop-filter:blur(16px);
+}
+.search-wrap{position:relative;flex:1;min-width:0;max-width:560px}
+.search{
+  display:flex;align-items:center;gap:9px;height:38px;padding:0 11px;border-radius:11px;
+  background:rgba(255,255,255,.045);border:1px solid var(--line);
+  transition:border-color .2s var(--ease),background .2s var(--ease),box-shadow .2s var(--ease);
+}
+.search:focus-within{border-color:var(--amber-line);background:rgba(255,255,255,.065);box-shadow:0 0 0 3px rgba(255,182,92,.10)}
+.search .ico{color:var(--t3)}
+.search input{flex:1;min-width:0;border:0;background:none;outline:none;color:var(--t1);font-size:13px}
+.search input::placeholder{color:var(--t3)}
+.search-hint{
+  font-size:10.5px;color:var(--t3);border:1px solid var(--line-2);border-radius:5px;
+  padding:1px 5px;font-weight:600;flex:none;
+}
+.search-clear{display:none;color:var(--t3);width:20px;height:20px;place-items:center;border-radius:6px}
+.search-clear:hover{color:var(--t1);background:rgba(255,255,255,.08)}
+.search.has-value .search-clear{display:grid}
+.search.has-value .search-hint{display:none}
+
+.s-panel{
+  position:absolute;left:0;right:0;top:calc(100% + 9px);padding:6px;max-height:min(62vh,440px);overflow-y:auto;
+  background:var(--ink-2);border:1px solid var(--line-2);border-radius:14px;box-shadow:var(--shadow);
+  opacity:0;transform:translateY(-7px) scale(.992);pointer-events:none;
+  transition:opacity .2s var(--ease),transform .22s var(--ease);
+}
+.s-panel.is-open{opacity:1;transform:none;pointer-events:auto}
+.s-group{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);padding:8px 10px 5px;font-weight:600}
+.s-row{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+  padding:8px 10px;border-radius:9px;transition:background .14s,color .14s;
+}
+.s-row:hover,.s-row.is-cursor{background:rgba(255,255,255,.06)}
+.s-row.is-cursor{box-shadow:inset 2px 0 0 var(--amber)}
+.s-row-main{min-width:0;flex:1}
+.s-row-t{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-row-d{font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-kind{font-size:10px;color:var(--t3);border:1px solid var(--line-2);border-radius:99px;padding:1px 7px;flex:none}
+.s-empty{padding:26px 12px;text-align:center;color:var(--t3);font-size:12px}
+
+.top-actions{display:flex;align-items:center;gap:6px;margin-left:auto;flex:none}
+.icon-btn{
+  width:34px;height:34px;display:grid;place-items:center;border-radius:10px;color:var(--t2);
+  transition:color .16s var(--ease),background .16s var(--ease),transform .16s var(--ease);
+}
+.icon-btn:hover{color:var(--t1);background:rgba(255,255,255,.06)}
+.icon-btn:active{transform:scale(.94)}
+.icon-btn.has-badge{position:relative}
+.icon-btn.has-badge::after{
+  content:"";position:absolute;top:7px;right:8px;width:6px;height:6px;border-radius:50%;
+  background:var(--amber);box-shadow:0 0 0 2px #0A0B0F;
+}
+.me-chip{
+  display:flex;align-items:center;gap:8px;padding:3px 10px 3px 3px;border-radius:99px;
+  border:1px solid var(--line);transition:border-color .18s,background .18s;margin-left:4px;
+}
+.me-chip:hover{border-color:var(--line-2);background:rgba(255,255,255,.04)}
+.me-chip span{font-size:12px;font-weight:500;color:var(--t2)}
+
+.progress{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:transparent}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--amber),var(--amber-2));transform:scaleX(0);transform-origin:0 50%;will-change:transform}
+
+.stream{overflow-y:auto;overflow-x:hidden;padding:22px 22px 64px;scroll-behavior:smooth;overscroll-behavior:contain}
+.stream::-webkit-scrollbar,.side::-webkit-scrollbar,.right::-webkit-scrollbar,.s-panel::-webkit-scrollbar{width:8px}
+.stream::-webkit-scrollbar-thumb,.side::-webkit-scrollbar-thumb,.right::-webkit-scrollbar-thumb,.s-panel::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,.09);border-radius:99px;border:2px solid transparent;background-clip:padding-box}
+.stream::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.18);background-clip:padding-box}
+
+.view{display:none}
+.view.is-active{display:block;animation:viewIn .36s var(--ease) both}
+@keyframes viewIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.view-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.view-title{margin:0;font-size:26px;letter-spacing:-.02em;font-weight:600;line-height:1.25}
+.view-sub{margin:5px 0 0;font-size:12.5px;color:var(--t2)}
+.seg{display:flex;gap:2px;padding:3px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid var(--line);flex:none}
+.seg button{
+  height:27px;padding:0 11px;border-radius:8px;font-size:12px;font-weight:500;color:var(--t2);
+  transition:background .18s var(--ease),color .18s var(--ease);
+}
+.seg button:hover{color:var(--t1)}
+.seg button.is-active{background:var(--ink-4);color:var(--t1);box-shadow:0 1px 6px rgba(0,0,0,.4)}
+
+.hero{
+  position:relative;overflow:hidden;border-radius:var(--r-xl);border:1px solid var(--line);
+  padding:22px 24px;margin-bottom:18px;
+  background:
+    radial-gradient(120% 180% at 6% 0%,rgba(255,182,92,.20),transparent 58%),
+    radial-gradient(90% 160% at 96% 10%,rgba(122,142,255,.14),transparent 62%),
+    linear-gradient(160deg,#191E28,#0B0D12);
+}
+.hero::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:linear-gradient(120deg,rgba(0,0,0,.9),transparent 70%);
+  -webkit-mask-image:linear-gradient(120deg,rgba(0,0,0,.9),transparent 70%);
+}
+.hero-inner{position:relative;z-index:1;max-width:60ch}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:10px}
+.eyebrow::before{content:"";width:16px;height:1px;background:var(--amber)}
+.hero h2{margin:0;font-size:23px;line-height:1.42;font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+.hero p{margin:8px 0 0;font-size:13px;color:var(--t2);max-width:52ch}
+.hero-actions{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap}
+
+.btn{
+  display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border-radius:10px;
+  font-size:12.5px;font-weight:600;
+  transition:transform .16s var(--ease),background .18s var(--ease),border-color .18s var(--ease),color .18s var(--ease);
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(150deg,var(--amber),var(--amber-2));color:#170E03;box-shadow:0 8px 20px rgba(240,145,58,.24)}
+.btn-primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.btn-ghost{border:1px solid var(--line-2);color:var(--t1);background:rgba(255,255,255,.035)}
+.btn-ghost:hover{background:rgba(255,255,255,.075)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+.composer{
+  border:1px solid var(--line);border-radius:var(--r-l);background:var(--ink-2);padding:14px 16px;margin-bottom:18px;
+  transition:border-color .2s var(--ease),background .2s var(--ease);
+}
+.composer:focus-within{border-color:var(--amber-line);background:var(--ink-3)}
+.composer-row{display:flex;gap:11px}
+.composer textarea{
+  flex:1;min-height:52px;max-height:200px;resize:none;border:0;background:none;outline:none;
+  font-size:13.5px;line-height:1.62;color:var(--t1);padding-top:6px;
+}
+.composer textarea::placeholder{color:var(--t3)}
+.composer-foot{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:11px;border-top:1px solid var(--line)}
+.composer-tools{display:flex;gap:2px}
+.tool{width:30px;height:30px;display:grid;place-items:center;border-radius:8px;color:var(--t3);transition:color .16s,background .16s}
+.tool:hover{color:var(--amber);background:var(--amber-soft)}
+.composer-foot .btn{margin-left:auto;height:32px}
+.composer-count{font-size:11px;color:var(--t3);font-variant-numeric:tabular-nums;margin-left:8px}
+
+.chips{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+.chip{
+  height:29px;padding:0 13px;border-radius:99px;font-size:12px;font-weight:500;color:var(--t2);
+  border:1px solid var(--line);background:rgba(255,255,255,.03);
+  transition:color .16s var(--ease),background .16s var(--ease),border-color .16s var(--ease);
+}
+.chip:hover{color:var(--t1);border-color:var(--line-2)}
+.chip.is-active{color:var(--amber);background:var(--amber-soft);border-color:var(--amber-line)}
+
+.feed{position:relative;padding-left:22px;display:flex;flex-direction:column;gap:12px}
+.feed::before{content:"";position:absolute;left:5px;top:10px;bottom:10px;width:1px;background:linear-gradient(180deg,var(--line-2),rgba(255,255,255,.02))}
+
+.post{
+  position:relative;border:1px solid var(--line);border-radius:var(--r-l);background:var(--ink-2);
+  padding:16px 18px 12px;
+  transition:transform .22s var(--ease),border-color .22s var(--ease),background .22s var(--ease);
+  content-visibility:auto;contain-intrinsic-size:auto 210px;
+}
+.post::before{
+  content:"";position:absolute;left:-21px;top:24px;width:7px;height:7px;border-radius:50%;
+  background:var(--ink-4);box-shadow:0 0 0 3px var(--ink-0);
+  transition:background .2s var(--ease),box-shadow .2s var(--ease);
+}
+.post:hover{transform:translateY(-2px);border-color:var(--line-2);background:var(--ink-3)}
+.post:hover::before{background:var(--t3)}
+.post.is-kb{border-color:var(--amber-line);box-shadow:0 0 0 3px rgba(255,182,92,.10)}
+.post.is-kb::before{background:var(--amber);box-shadow:0 0 0 3px var(--ink-0),0 0 12px rgba(255,182,92,.7)}
+.post.flash{animation:flash .9s var(--ease)}
+@keyframes flash{0%{box-shadow:0 0 0 3px rgba(255,182,92,.5)}100%{box-shadow:0 0 0 3px rgba(255,182,92,0)}}
+
+.post-head{display:flex;align-items:flex-start;gap:11px}
+.post-id{min-width:0;flex:1}
+.post-name{display:flex;align-items:center;gap:5px;font-size:13.5px;font-weight:600;line-height:1.35}
+.post-name .ico{color:var(--amber)}
+.post-meta{font-size:11.5px;color:var(--t3);margin-top:1px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.post-meta i{width:3px;height:3px;border-radius:50%;background:var(--t3);font-style:normal}
+.post-body{margin:11px 0 0;font-size:13.5px;line-height:1.72;color:rgba(255,255,255,.86);max-width:70ch}
+.post-body b{color:var(--t1);font-weight:600}
+.post-tags{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap}
+.tag{
+  font-size:11px;color:var(--t2);border:1px solid var(--line);border-radius:6px;padding:2px 8px;
+  background:rgba(255,255,255,.03);transition:color .16s,border-color .16s;
+}
+.tag:hover{color:var(--amber);border-color:var(--amber-line)}
+
+.fig{
+  position:relative;height:132px;margin-top:13px;border-radius:var(--r-m);overflow:hidden;border:1px solid var(--line);
+  background:linear-gradient(145deg,#171C26,#0A0C11);
+}
+.fig::before{content:"";position:absolute;inset:0;opacity:.85;background:var(--fig)}
+.fig::after{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:26px 26px;mask-image:radial-gradient(70% 70% at 50% 50%,#000,transparent);
+  -webkit-mask-image:radial-gradient(70% 70% at 50% 50%,#000,transparent);
+}
+.fig-label{
+  position:absolute;left:12px;bottom:10px;z-index:2;font-size:11px;color:rgba(255,255,255,.78);
+  background:rgba(8,9,12,.62);border:1px solid var(--line);border-radius:6px;padding:2px 8px;backdrop-filter:blur(6px);
+}
+
+.post-actions{display:flex;align-items:center;gap:2px;margin-top:10px;padding-top:9px;border-top:1px solid var(--line)}
+.act{
+  display:inline-flex;align-items:center;gap:6px;height:29px;padding:0 9px;border-radius:8px;
+  font-size:11.5px;font-weight:500;color:var(--t3);font-variant-numeric:tabular-nums;
+  transition:color .16s var(--ease),background .16s var(--ease),transform .16s var(--ease);
+}
+.act:hover{color:var(--t1);background:rgba(255,255,255,.055)}
+.act:active{transform:scale(.93)}
+.act.like.is-on{color:var(--amber);background:var(--amber-soft)}
+.act.like.is-on .ico{fill:currentColor;stroke-width:0}
+.act.save.is-on{color:var(--amber);background:var(--amber-soft)}
+.act.save.is-on .ico{fill:currentColor;stroke-width:0}
+.act.more{margin-left:auto;padding:0 7px}
+
+.av{
+  position:relative;flex:none;display:grid;place-items:center;border-radius:50%;overflow:visible;
+  background:linear-gradient(148deg,hsl(var(--h) 68% 62%),hsl(calc(var(--h) + 34) 62% 40%));
+  color:#0A0B0E;font-weight:700;letter-spacing:.02em;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);
+}
+.av>span{transform:translateY(-.5px);font-size:.42em;line-height:1}
+.av-sm{width:28px;height:28px;font-size:28px}
+.av-md{width:38px;height:38px;font-size:38px}
+.av-lg{width:46px;height:46px;font-size:46px}
+.av-xl{width:88px;height:88px;font-size:88px}
+.av[data-on]::after{
+  content:"";position:absolute;right:-1px;bottom:-1px;width:9px;height:9px;border-radius:50%;
+  background:var(--ok);box-shadow:0 0 0 2.5px var(--ink-2);
+}
+.av[data-on="away"]::after{background:var(--amber)}
+.av[data-on="off"]::after{background:var(--t3)}
+
+.burst{position:fixed;z-index:90;pointer-events:none;width:0;height:0}
+.burst i{position:absolute;left:0;top:0;width:5px;height:5px;border-radius:50%;background:var(--amber);transform:translate(-50%,-50%)}
+
+/* ---------- notice ---------- */
+.notice{
+  border:1px solid var(--line);border-radius:var(--r-l);background:var(--ink-2);overflow:hidden;
+  transition:border-color .2s var(--ease),background .2s var(--ease);
+  margin-bottom:10px;
+}
+.notice:hover{border-color:var(--line-2)}
+.notice.is-pin{border-color:var(--amber-line);background:linear-gradient(120deg,rgba(255,182,92,.10),rgba(18,21,27,.9) 55%)}
+.notice-head{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:15px 17px}
+.notice-ico{
+  width:32px;height:32px;flex:none;display:grid;place-items:center;border-radius:9px;
+  background:rgba(255,255,255,.05);color:var(--t2);
+}
+.notice.is-pin .notice-ico{background:var(--amber-soft);color:var(--amber)}
+.notice-main{min-width:0;flex:1}
+.notice-t{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;line-height:1.4}
+.notice-d{font-size:11.5px;color:var(--t3);margin-top:2px}
+.notice-chev{color:var(--t3);transition:transform .3s var(--ease),color .2s}
+.notice.is-open .notice-chev{transform:rotate(180deg);color:var(--amber)}
+.notice-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .34s var(--ease)}
+.notice.is-open .notice-body{grid-template-rows:1fr}
+.notice-body>div{overflow:hidden}
+.notice-body p{margin:0;padding:0 17px 16px 61px;font-size:12.5px;line-height:1.78;color:var(--t2);max-width:74ch}
+.notice-body p b{color:var(--t1);font-weight:600}
+.pill{
+  font-size:10px;font-weight:600;letter-spacing:.04em;border-radius:99px;padding:1.5px 8px;flex:none;
+  background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-line);
+}
+.pill.neutral{background:rgba(255,255,255,.05);color:var(--t3);border-color:var(--line)}
+.pill.ok{background:rgba(74,222,128,.12);color:var(--ok);border-color:rgba(74,222,128,.3)}
+
+/* ---------- messages ---------- */
+.msg{
+  display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;padding:14px 16px;
+  border:1px solid var(--line);border-radius:var(--r-m);background:var(--ink-2);margin-bottom:9px;
+  transition:transform .2s var(--ease),border-color .2s var(--ease),background .2s var(--ease);
+}
+.msg:hover{transform:translateX(3px);border-color:var(--line-2);background:var(--ink-3)}
+.msg.is-unread{background:linear-gradient(100deg,rgba(255,182,92,.075),rgba(18,21,27,.95) 42%)}
+.msg-main{min-width:0;flex:1}
+.msg-t{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.msg-t time{margin-left:auto;font-size:11px;font-weight:400;color:var(--t3);font-variant-numeric:tabular-nums}
+.msg-d{font-size:12.5px;color:var(--t2);margin-top:3px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.msg-type{font-size:10px;color:var(--t3);border:1px solid var(--line);border-radius:5px;padding:0 6px;flex:none}
+.unread{width:6px;height:6px;border-radius:50%;background:var(--amber);flex:none;margin-top:7px}
+
+/* ---------- friends ---------- */
+.friend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:12px}
+.friend{
+  position:relative;text-align:left;padding:16px;border-radius:var(--r-l);
+  border:1px solid var(--line);background:var(--ink-2);
+  transition:transform .22s var(--ease),border-color .22s var(--ease),background .22s var(--ease);
+  content-visibility:auto;contain-intrinsic-size:auto 168px;
+}
+.friend:hover{transform:translateY(-3px);border-color:var(--line-2);background:var(--ink-3)}
+.friend-top{display:flex;align-items:center;gap:11px}
+.friend-name{font-size:13.5px;font-weight:600;line-height:1.35;display:flex;align-items:center;gap:5px}
+.friend-role{font-size:11.5px;color:var(--t3);margin-top:1px}
+.friend-bio{font-size:12px;color:var(--t2);line-height:1.62;margin:11px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6em}
+.friend-foot{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:11px;color:var(--t3)}
+.friend-foot .pill{margin-left:auto}
+
+/* ---------- profile ---------- */
+.cover{
+  position:relative;height:168px;border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--line);
+  background:
+    radial-gradient(120% 180% at 10% 6%,rgba(255,182,92,.55),transparent 58%),
+    radial-gradient(100% 160% at 82% 16%,rgba(126,146,255,.32),transparent 60%),
+    linear-gradient(160deg,#1B212C,#08090D);
+}
+.cover::before{
+  content:"";position:absolute;inset:0;opacity:.6;
+  background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:38px 38px;
+  mask-image:radial-gradient(80% 80% at 30% 30%,#000,transparent);
+  -webkit-mask-image:radial-gradient(80% 80% at 30% 30%,#000,transparent);
+}
+.cover::after{
+  content:"";position:absolute;top:-60%;left:-30%;width:46%;height:220%;opacity:.5;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent);
+  transform:translateX(-40%) rotate(8deg);
+  animation:sheen 9s var(--ease) infinite;
+}
+@keyframes sheen{0%{transform:translateX(-60%) rotate(8deg)}55%,100%{transform:translateX(320%) rotate(8deg)}}
+.profile-body{position:relative;padding:0 4px;margin-top:-46px}
+.profile-top{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.profile-av{border-radius:50%;box-shadow:0 0 0 4px var(--ink-0),0 12px 30px rgba(0,0,0,.5)}
+.profile-id{flex:1;min-width:0;padding-bottom:4px}
+.profile-name{display:flex;align-items:center;gap:7px;font-size:21px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+.profile-handle{font-size:12px;color:var(--t3);margin-top:2px}
+.profile-bio{margin:14px 0 0;font-size:13px;line-height:1.72;color:var(--t2);max-width:66ch}
+.profile-meta{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;color:var(--t3)}
+.profile-meta span{display:inline-flex;align-items:center;gap:5px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0 6px}
+.stat{padding:13px 15px;border-radius:var(--r-m);border:1px solid var(--line);background:rgba(255,255,255,.028)}
+.stat-k{font-size:11.5px;color:var(--t3)}
+.stat-v{font-size:22px;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;line-height:1.25;margin-top:2px}
+.stat-v em{font-style:normal;font-size:12px;color:var(--t3);margin-left:3px;font-weight:500}
+
+.p-tabs{display:flex;gap:4px;margin:20px 0 14px;border-bottom:1px solid var(--line);padding-bottom:0;overflow-x:auto}
+.p-tab{
+  position:relative;height:38px;padding:0 13px;font-size:13px;font-weight:500;color:var(--t2);
+  transition:color .18s var(--ease);
+}
+.p-tab:hover{color:var(--t1)}
+.p-tab.is-active{color:var(--t1)}
+.p-tab.is-active::after{content:"";position:absolute;left:8px;right:8px;bottom:-1px;height:2px;border-radius:2px;background:var(--amber)}
+.p-panel{display:none}
+.p-panel.is-active{display:block;animation:viewIn .3s var(--ease) both}
+.work-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.work{
+  border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden;background:var(--ink-2);
+  transition:transform .22s var(--ease),border-color .22s var(--ease);
+  content-visibility:auto;contain-intrinsic-size:auto 210px;
+}
+.work:hover{transform:translateY(-3px);border-color:var(--line-2)}
+.work-img{height:112px;background:var(--fig);position:relative}
+.work-img::after{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(120deg,rgba(255,255,255,.14),transparent 60%);
+}
+.work-body{padding:11px 13px 13px}
+.work-t{font-size:12.5px;font-weight:600;line-height:1.45}
+.work-d{font-size:11px;color:var(--t3);margin-top:3px;display:flex;gap:9px}
+
+/* ---------- right rail ---------- */
+.right{padding:22px 20px 40px 4px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--ink-2);border:1px solid var(--line);border-radius:var(--r-l);padding:16px}
+.card-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.card-head h3{margin:0;font-size:13px;font-weight:600;letter-spacing:.01em}
+.card-head .ico{color:var(--amber)}
+.card-head .link{margin-left:auto;font-size:11.5px;color:var(--t3);transition:color .16s}
+.card-head .link:hover{color:var(--amber)}
+.me-card{background:linear-gradient(165deg,rgba(255,182,92,.10),rgba(18,21,27,.96) 48%)}
+.me-row{display:flex;align-items:center;gap:11px}
+.me-name{font-size:13.5px;font-weight:600}
+.me-sub{font-size:11.5px;color:var(--t3)}
+.me-stats{display:flex;gap:18px;margin-top:14px}
+.me-stats div{font-size:11.5px;color:var(--t3)}
+.me-stats b{display:block;font-size:15px;color:var(--t1);font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.notice-mini{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);text-align:left;width:100%}
+.notice-mini:last-child{border-bottom:0;padding-bottom:0}
+.notice-mini:first-of-type{padding-top:0}
+.nm-dot{width:5px;height:5px;border-radius:50%;background:var(--amber);flex:none;margin-top:7px}
+.nm-t{font-size:12px;font-weight:500;line-height:1.5;transition:color .16s}
+.notice-mini:hover .nm-t{color:var(--amber)}
+.nm-d{font-size:10.5px;color:var(--t3);margin-top:2px}
+.f-row{display:flex;align-items:center;gap:10px;padding:8px 0}
+.f-name{font-size:12.5px;font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.f-sub{font-size:10.5px;color:var(--t3)}
+.f-btn{
+  margin-left:auto;flex:none;height:26px;padding:0 11px;border-radius:8px;font-size:11px;font-weight:600;
+  border:1px solid var(--line-2);color:var(--t1);transition:background .16s,color .16s,border-color .16s;
+}
+.f-btn:hover{background:rgba(255,255,255,.08)}
+.f-btn.is-on{border-color:var(--amber-line);color:var(--amber);background:var(--amber-soft)}
+.rail-foot{font-size:10.5px;color:var(--t3);line-height:1.8;padding:0 4px}
+
+.to-top{
+  position:absolute;right:22px;bottom:22px;z-index:20;width:38px;height:38px;display:grid;place-items:center;
+  border-radius:12px;border:1px solid var(--line-2);background:rgba(24,28,36,.9);color:var(--t2);
+  box-shadow:0 10px 26px rgba(0,0,0,.5);
+  opacity:0;transform:translateY(10px) scale(.9);pointer-events:none;
+  transition:opacity .26s var(--ease),transform .26s var(--ease),color .16s,background .16s;
+  backdrop-filter:blur(10px);
+}
+.to-top.is-on{opacity:1;transform:none;pointer-events:auto}
+.to-top:hover{color:var(--amber);background:rgba(34,40,51,.95)}
+
+.scrim{
+  position:fixed;inset:0;z-index:55;background:rgba(4,5,8,.6);backdrop-filter:blur(3px);
+  opacity:0;pointer-events:none;transition:opacity .3s var(--ease);
+}
+.scrim.is-open{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;z-index:60;width:min(408px,92vw);height:100dvh;
+  display:flex;flex-direction:column;padding:20px;overflow-y:auto;
+  background:var(--ink-1);border-left:1px solid var(--line-2);box-shadow:-30px 0 70px rgba(0,0,0,.5);
+  transform:translateX(101%);transition:transform .4s var(--ease);
+}
+.drawer.is-open{transform:none}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.drawer-head h3{margin:0;font-size:13px;font-weight:600;color:var(--t2);letter-spacing:.02em}
+.d-hero{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.d-name{font-size:18px;font-weight:600;letter-spacing:-.01em}
+.d-role{font-size:12px;color:var(--t3);margin-top:2px}
+.d-bio{font-size:12.5px;line-height:1.75;color:var(--t2);margin:16px 0 0}
+.d-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.d-cell{padding:10px;border-radius:10px;background:rgba(255,255,255,.035);border:1px solid var(--line)}
+.d-cell b{display:block;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.d-cell span{font-size:10.5px;color:var(--t3)}
+.d-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:20px 0 9px;font-weight:600}
+.d-acts{display:flex;gap:8px;margin-top:auto;padding-top:20px}
+.d-acts .btn{flex:1;justify-content:center}
+
+.toast{
+  position:fixed;left:50%;bottom:34px;z-index:95;display:flex;align-items:center;gap:9px;
+  padding:10px 16px;border-radius:11px;background:rgba(28,33,42,.97);border:1px solid var(--line-2);
+  font-size:12.5px;font-weight:500;color:var(--t1);box-shadow:0 18px 40px rgba(0,0,0,.55);
+  opacity:0;transform:translate(-50%,16px) scale(.96);pointer-events:none;
+  transition:opacity .26s var(--ease),transform .3s var(--ease);
+}
+.toast.is-on{opacity:1;transform:translate(-50%,0) scale(1)}
+.toast .ico{color:var(--ok)}
+
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .52s var(--ease),transform .52s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+@media (max-width:1320px){
+  .app{grid-template-columns:var(--rail) var(--side) minmax(0,1fr)}
+  .right{display:none}
+}
+@media (max-width:1080px){
+  .app{grid-template-columns:var(--rail) minmax(0,1fr)}
+  .side{display:none}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;height:100dvh}
+  .rail{
+    order:2;flex-direction:row;justify-content:space-around;border-right:0;border-top:1px solid var(--line);
+    padding:7px 6px;gap:2px;background:rgba(9,10,14,.96);backdrop-filter:blur(14px);
+  }
+  .brand,.rail-spacer,.rail-btn:nth-of-type(n+6){display:none}
+  .rail-btn.is-active::after{display:none}
+  .center{order:1}
+  .stream{padding:16px 14px 40px}
+  .topbar{padding:10px 14px}
+  .me-chip span{display:none}
+  .view-title{font-size:22px}
+  .cover{height:132px}
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .stat-v{font-size:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.6 12 3l9 7.6V21a1 1 0 0 1-1 1h-5.2v-6.6H9.2V22H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3.2l1.9 4.7 4.7 1.9-4.7 1.9L12 16.4l-1.9-4.7L5.4 9.8l4.7-1.9z"/><path d="M18.6 15.2l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8.5a6 6 0 1 0-12 0c0 6.5-2.5 7.5-2.5 7.5h17S18 15 18 8.5"/><path d="M13.7 20.5a2 2 0 0 1-3.4 0"/></symbol>
+  <symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M3 10.5v3a1 1 0 0 0 1 1h2l4 4V5.5l-4 4H4a1 1 0 0 0-1 1z"/><path d="M14.5 8.2a4 4 0 0 1 0 7.6"/><path d="M18 5a8 8 0 0 1 0 14"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-1.8a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V21"/><circle cx="9" cy="7.2" r="3.8"/><path d="M22 21v-1.8a4 4 0 0 0-3-3.8"/><path d="M16 3.4a4 4 0 0 1 0 7.5"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.6 5.9a5.4 5.4 0 0 0-7.7 0L12 6.8l-.9-.9a5.4 5.4 0 1 0-7.7 7.7l.9.9L12 22l7.7-7.5.9-.9a5.4 5.4 0 0 0 0-7.7z"/></symbol>
+  <symbol id="i-comment" viewBox="0 0 24 24"><path d="M21 11.6a8.3 8.3 0 0 1-8.9 8.4 9.7 9.7 0 0 1-4-.8L3 21l1.8-4.3A8.3 8.3 0 0 1 12 3.2a8.3 8.3 0 0 1 9 8.4z"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6.5"/><path d="M16 7l-4-4-4 4"/><path d="M12 3v13"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-4.6L5 21V5.6A2.6 2.6 0 0 1 7.6 3h8.8A2.6 2.6 0 0 1 19 5.6z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5.5v13M5.5 12h13"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21.5 2.5 10.8 13.2"/><path d="M21.5 2.5 15 21l-4.2-7.8L3 9z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5.5"/><path d="M5.5 12 12 5.5 18.5 12"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6.5 9.2 17.3 4 12"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3.1 2"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2.4a1.1 1.1 0 0 1 1.1 1.1v5.9l4.1 4.1v2.2h-4.1v5.8h-2.2v-5.8H6.8v-2.2l4.1-4.1V3.5A1.1 1.1 0 0 1 12 2.4z"/></symbol>
+  <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M4.5 12h15"/><path d="M13.5 6l6 6-6 6"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M22 7l-8.6 8.6-4.2-4.2L2 19"/><path d="M16 7h6v6"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.6a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2 2 2 0 1 1-4 0 1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9 2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 2.9-1.2 2 2 0 1 1 4 0 1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9 2 2 0 1 1 0 4 1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3.5" width="18" height="17" rx="2.4"/><circle cx="8.6" cy="9" r="1.5"/><path d="M21 15.4 16.2 10.6 5 21"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4.5"/><path d="M16 20v-6.5"/><path d="M22 20H2"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M3.4 6.3 12 13l8.6-6.7"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2.5 4 14h6l-1 7.5L19 10h-6z"/></symbol>
+</svg>
+
+<div class="app">
+  <aside class="rail">
+    <div class="brand" aria-label="Élan">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 4 20.5"/><path d="M12 3.5 20 20.5"/><path d="M7.4 14.4h9.2"/></svg>
+    </div>
+    <button class="rail-btn is-active" data-nav="home" aria-label="首页"><svg class="ico ico-20"><use href="#i-home"/></svg></button>
+    <button class="rail-btn" data-nav="latest" aria-label="最新消息"><svg class="ico ico-20"><use href="#i-spark"/></svg><span class="rail-dot"></span></button>
+    <button class="rail-btn" data-nav="notice" aria-label="公告"><svg class="ico ico-20"><use href="#i-megaphone"/></svg></button>
+    <button class="rail-btn" data-nav="friends" aria-label="好友"><svg class="ico ico-20"><use href="#i-users"/></svg></button>
+    <button class="rail-btn" data-nav="profile" aria-label="个人主页"><svg class="ico ico-20"><use href="#i-user"/></svg></button>
+    <div class="rail-spacer"></div>
+    <button class="rail-btn" data-act="compose" aria-label="发布内容"><svg class="ico ico-20"><use href="#i-plus"/></svg></button>
+    <button class="rail-btn" data-act="settings" aria-label="设置"><svg class="ico ico-20"><use href="#i-settings"/></svg></button>
+  </aside>
+
+  <nav class="side">
+    <div class="side-label">工作台</div>
+    <button class="nav-item is-active" data-nav="home">
+      <svg class="ico"><use href="#i-home"/></svg>首页
+    </button>
+    <button class="nav-item" data-nav="latest">
+      <svg class="ico"><use href="#i-spark"/></svg>最新消息<span class="nav-count">12</span>
+    </button>
+    <button class="nav-item" data-nav="notice">
+      <svg class="ico"><use href="#i-megaphone"/></svg>公告<span class="nav-count">3</span>
+    </button>
+    <button class="nav-item" data-nav="friends">
+      <svg class="ico"><use href="#i-users"/></svg>好友<span class="nav-count">4</span>
+    </button>
+    <button class="nav-item" data-nav="profile">
+      <svg class="ico"><use href="#i-user"/></svg>个人主页
+    </button>
+
+    <div class="side-label">筛选</div>
+    <button class="nav-item" data-chip="hot"><svg class="ico"><use href="#i-trend"/></svg>热门讨论</button>
+    <button class="nav-item" data-chip="saved"><svg class="ico"><use href="#i-bookmark"/></svg>我的收藏</button>
+
+    <div class="side-card">
+      <h4 class="side-card-title"><svg class="ico ico-14"><use href="#i-zap"/></svg>键盘翻阅</h4>
+      <p>按 J / K 在内容流中连续跳转，无需鼠标。</p>
+      <div class="kbd-row"><kbd>J</kbd><kbd>K</kbd><span style="font-size:10.5px;color:var(--t3)">翻阅</span><kbd>/</kbd><span style="font-size:10.5px;color:var(--t3)">搜索</span></div>
+    </div>
+  </nav>
+
+  <main class="center">
+    <header class="topbar">
+      <div class="search-wrap">
+        <div class="search" id="searchBox">
+          <svg class="ico"><use href="#i-search"/></svg>
+          <input id="searchInput" type="search" placeholder="搜索好友、消息、公告…" autocomplete="off" aria-label="全局搜索">
+          <button class="search-clear" id="searchClear" aria-label="清空搜索"><svg class="ico ico-14"><use href="#i-x"/></svg></button>
+          <span class="search-hint">/</span>
+        </div>
+        <div class="s-panel" id="searchPanel" role="listbox" aria-label="搜索结果"></div>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn has-badge" data-nav="latest" aria-label="通知"><svg class="ico"><use href="#i-bell"/></svg></button>
+        <button class="icon-btn" data-act="settings" aria-label="设置"><svg class="ico"><use href="#i-settings"/></svg></button>
+        <button class="me-chip" data-nav="profile">
+          <span class="av av-sm" style="--h:38"><span>沈</span></span><span>沈砚舟</span>
+        </button>
+      </div>
+      <div class="progress"><i id="progressBar"></i></div>
+    </header>
+
+    <div class="stream" id="stream">
+
+      <section class="view is-active" data-view="home">
+        <div class="hero">
+          <div class="hero-inner">
+            <div class="eyebrow">今日焦点</div>
+            <h2>把复杂的设计讨论，压缩成一条能读完的时间线。</h2>
+            <p>Élan 把关注、公告与私信收敛到同一条流里，用层级、节奏与克制的动效降低信息噪音。</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" data-act="compose"><svg class="ico ico-14"><use href="#i-plus"/></svg>发布动态</button>
+              <button class="btn btn-ghost" data-nav="friends">查看在线好友</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="composer">
+          <div class="composer-row">
+            <span class="av av-md" style="--h:38"><span>沈</span></span>
+            <textarea id="composerText" rows="2" placeholder="分享一条想法，或一段正在打磨的设计…" aria-label="发布内容"></textarea>
+          </div>
+          <div class="composer-foot">
+            <div class="composer-tools">
+              <button class="tool" aria-label="添加图片" data-act="attach"><svg class="ico"><use href="#i-image"/></svg></button>
+              <button class="tool" aria-label="添加数据图表" data-act="attach"><svg class="ico"><use href="#i-chart"/></svg></button>
+              <button class="tool" aria-label="添加链接" data-act="attach"><svg class="ico"><use href="#i-globe"/></svg></button>
+            </div>
+            <span class="composer-count" id="composerCount">0 / 500</span>
+            <button class="btn btn-primary" id="publishBtn">发布</button>
+          </div>
+        </div>
+
+        <div class="chips" id="feedChips">
+          <button class="chip is-active" data-filter="all">全部</button>
+          <button class="chip" data-filter="following">关注</button>
+          <button class="chip" data-filter="hot">热门</button>
+          <button class="chip" data-filter="design">设计</button>
+          <button class="chip" data-filter="frontend">前端</button>
+          <button class="chip" data-filter="data">数据</button>
+        </div>
+
+        <div class="feed" id="feed">
+          <article class="post reveal" data-kb id="p1" data-tags="following design" data-s="林砚 把主页的信息层次从四层压到三层 设计系统 首屏 信息密度">
+            <div class="post-head">
+              <span class="av av-md" data-on="on" style="--h:258"><span>林</span></span>
+              <div class="post-id">
+                <div class="post-name">林砚<svg class="ico ico-14"><use href="#i-check"/></svg></div>
+                <div class="post-meta">产品设计师<i></i>12 分钟前</div>
+              </div>
+              <button class="icon-btn" aria-label="更多操作"><svg class="ico"><use href="#i-more"/></svg></button>
+            </div>
+            <p class="post-body">把主页的信息层次从四层压到三层之后，首屏有效信息密度提升了近一半，而滚动长度减少了 <b>230px</b>。做法很朴素：删掉装饰性分隔线，让留白承担分组；把统计数字从卡片里拿出来，直接放在身份区下方。</p>
+            <div class="post-tags"><span class="tag">设计系统</span><span class="tag">信息层级</span><span class="tag">落地复盘</span></div>
+            <div class="post-actions">
+              <button class="act like" data-n="128"><svg class="ico ico-14"><use href="#i-heart"/></svg><span>128</span></button>
+              <button class="act" data-n="24"><svg class="ico ico-14"><use href="#i-comment"/></svg><span>24</span></button>
+              <button class="act save" data-n="9"><svg class="ico ico-14"><use href="#i-bookmark"/></svg><span>9</span></button>
+              <button class="act more" aria-label="分享"><svg class="ico ico-14"><use href="#i-share"/></svg></button>
+            </div>
+          </article>
+
+          <article class="post reveal" data-kb id="p2" data-tags="following frontend hot" data-s="苏栖 列表入场动画 transform opacity 掉帧 60fps 滚动性能">
+            <div class="post-head">
+              <span class="av av-md" data-on="on" style="--h:196"><span>苏</span></span>
+              <div class="post-id">
+                <div class="post-name">苏栖<svg class="ico ico-14"><use href="#i-check"/></svg></div>
+                <div class="post-meta">前端工程师<i></i>1 小时前</div>
+              </div>
+              <button class="icon-btn" aria-label="更多操作"><svg class="ico"><use href="#i-more"/></svg></button>
+            </div>
+            <p class="post-body">把列表的入场动画从 <b>height</b> 改为 <b>transform + opacity</b> 之后，长列表滚动的掉帧点从 8 处降到 0。再补上 <b>content-visibility: auto</b>，屏外卡片直接跳过渲染，中低端机型也稳在 60fps。</p>
+            <div class="fig" style="--fig:linear-gradient(120deg,#2A3340,#0C1016 62%),repeating-linear-gradient(90deg,rgba(255,182,92,.35) 0 2px,transparent 2px 16px)">
+              <span class="fig-label">帧率采样 · 60fps 稳定</span>
+            </div>
+            <div class="post-tags"><span class="tag">渲染性能</span><span class="tag">动画</span></div>
+            <div class="post-actions">
+              <button class="act like" data-n="341"><svg class="ico ico-14"><use href="#i-heart"/></svg><span>341</span></button>
+              <button class="act" data-n="62"><svg class="ico ico-14"><use href="#i-comment"/></svg><span>62</span></button>
+              <button class="act save" data-n="88"><svg class="ico ico-14"><use href="#i-bookmark"/></svg><span>88</span></button>
+              <button class="act more" aria-label="分享"><svg class="ico ico-14"><use href="#i-share"/></svg></button>
+            </div>
+          </article>
+
+          <article class="post reveal" data-kb id="p3" data-tags="following design" data-s="何知微 单一强调色 琥珀 色彩系统 深色界面 对比度">
+            <div class="post-head">
+              <span class="av av-md" data-on="away" style="--h:32"><span>何</span></span>
+              <div class="post-id">
+                <div class="post-name">何知微</div>
+                <div class="post-meta">品牌设计师<i></i>3 小时前</div>
+              </div>
+              <button class="icon-btn" aria-label="更多操作"><svg class="ico"><use href="#i-more"/></svg></button>
+            </div>
+            <p class="post-body">深色界面最容易翻车的地方不是配色，而是对比度不够的次级文字。我的经验值：正文 93% 白、次级 60%、辅助 37%，三级就够，再加一级必然糊成一团。强调色只给一个，我选琥珀，因为它在近黑底色上既有温度又不刺眼。</p>
+            <div class="post-tags"><span class="tag">色彩系统</span><span class="tag">可读性</span><span class="tag">深色模式</span></div>
+            <div class="post-actions">
+              <button class="act like" data-n="207"><svg class="ico ico-14"><use href="#i-heart"/></svg><span>207</span></button>
+              <button class="act" data-n="31"><svg class="ico ico-14"><use href="#i-comment"/></svg><span>31</span></button>
+              <button class="act save" data-n="45"><svg class="ico ico-14"><use href="#i-bookmark"/></svg><span>45</span></button>
+              <button class="act more" aria-label="分享"><svg class="ico ico-14"><use href="#i-share"/></svg></button>
+            </div>
+          </article>
+
+          <article class="post reveal" data-kb id="p4" data-tags="hot data" data-s="陈望 搜索召回 索引 延迟 200ms 跨类型检索 数据">
+            <div class="post-head">
+              <span class="av av-md" data-on="off" style="--h:280"><span>陈</span></span>
+              <div class="post-id">
+                <div class="post-name">陈望</div>
+                <div class="post-meta">数据科学<i></i>昨天 21:40</div>
+              </div>
+              <button class="icon-btn" aria-label="更多操作"><svg class="ico"><use href="#i-more"/></svg></button>
+            </div>
+            <p class="post-body">全局搜索的召回质量，八成取决于索引结构而不是排序模型。把用户、消息、公告三类内容统一成同一张倒排表、只保留三个可检索字段之后，P99 延迟从 <b>420ms</b> 降到 <b>190ms</b>，而点击率没有下降。</p>
+            <div class="post-tags"><span class="tag">搜索</span><span class="tag">延迟优化</span></div>
+            <div class="post-actions">
+              <button class="act like" data-n="96"><svg class="ico ico-14"><use href="#i-heart"/></svg><span>96</span></button>
+              <button class="act" data-n="18"><svg class="ico ico-14"><use href="#i-comment"/></svg><span>18</span></button>
+              <button class="act save" data-n="27"><svg class="ico ico-14"><use href="#i-bookmark"/></svg><span>27</span></button>
+              <button class="act more" aria-label="分享"><svg class="ico ico-14"><use href="#i-share"/></svg></button>
+            </div>
+          </article>
+
+          <article class="post reveal" data-kb id="p5" data-tags="frontend design" data-s="周牧 无表情按键 图标系统 一致性 交互">
+            <div class="post-head">
+              <span class="av av-md" data-on="on" style="--h:150"><span>周</span></span>
+              <div class="post-id">
+                <div class="post-name">周牧</div>
+                <div class="post-meta">内容策略<i></i>2 天前</div>
+              </div>
+              <button class="icon-btn" aria-label="更多操作"><svg class="ico"><use href="#i-more"/></svg></button>
+            </div>
+            <p class="post-body">别用表情当按钮。表情的笔画粗细、视觉重量、跨平台渲染全都不受控，放在工具栏里会立刻拉低整体质感。统一的线性图标 + 一致的描边宽度，才是能撑住深色界面的下限。</p>
+            <div class="post-tags"><span class="tag">图标系统</span><span class="tag">一致性</span></div>
+            <div class="post-actions">
+              <button class="act like" data-n="174"><svg class="ico ico-14"><use href="#i-heart"/></svg><span>174</span></button>
+              <button class="act" data-n="29"><svg class="ico ico-14"><use href="#i-comment"/></svg><span>29</span></button>
+              <button class="act save" data-n="51"><svg class="ico ico-14"><use href="#i-bookmark"/></svg><span>51</span></button>
+              <button class="act more" aria-label="分享"><svg class="ico ico-14"><use href="#i-share"/></svg></button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" data-view="latest">
+        <div class="view-head">
+          <div>
+            <h1 class="view-title">最新消息</h1>
+            <p class="view-sub">互动、私信与系统提醒，按时间收敛到一处。</p>
+          </div>
+          <div class="seg" id="msgSeg">
+            <button class="is-active" data-seg="all">全部</button>
+            <button data-seg="react">互动</button>
+            <button data-seg="dm">私信</button>
+          </div>
+        </div>
+
+        <div id="msgList">
+          <button class="msg is-unread" data-kind="dm" data-user="林砚" data-s="林砚 私信 主页改版 交互稿 明天上午">
+            <span class="av av-md" data-on="on" style="--h:258"><span>林</span></span>
+            <div class="msg-main">
+              <div class="msg-t">林砚<span class="msg-type">私信</span><time>2 分钟前</time></div>
+              <div class="msg-d">主页那版改稿我看了，交互稿明早发你，先别动统计区的间距。</div>
+            </div>
+            <span class="unread"></span>
+          </button>
+          <button class="msg is-unread" data-kind="react" data-user="苏栖" data-s="苏栖 点赞 评论 帧率 动画 实现方式">
+            <span class="av av-md" data-on="on" style="--h:196"><span>苏</span></span>
+            <div class="msg-main">
+              <div class="msg-t">苏栖<span class="msg-type">互动</span><time>18 分钟前</time></div>
+              <div class="msg-d">赞了你的动态，并评论：这套入场动画的实现方式能开源吗？</div>
+            </div>
+            <span class="unread"></span>
+          </button>
+          <button class="msg is-unread" data-kind="dm" data-user="何知微" data-s="何知微 私信 色板 琥珀 深色 导出">
+            <span class="av av-md" data-on="away" style="--h:32"><span>何</span></span>
+            <div class="msg-main">
+              <div class="msg-t">何知微<span class="msg-type">私信</span><time>1 小时前</time></div>
+              <div class="msg-d">色板已经导出，琥珀那组我调低了 4% 饱和度，深色下更耐看。</div>
+            </div>
+            <span class="unread"></span>
+          </button>
+          <button class="msg" data-kind="react" data-user="陈望" data-s="陈望 关注 你 数据 索引">
+            <span class="av av-md" data-on="off" style="--h:280"><span>陈</span></span>
+            <div class="msg-main">
+              <div class="msg-t">陈望<span class="msg-type">互动</span><time>3 小时前</time></div>
+              <div class="msg-d">关注了你。你们也在做跨类型检索吗，想交流一下索引结构。</div>
+            </div>
+            <span class="unread"></span>
+          </button>
+          <button class="msg" data-kind="dm" data-user="周牧" data-s="周牧 私信 公告 文案 第二期 激励">
+            <span class="av av-md" data-on="on" style="--h:150"><span>周</span></span>
+            <div class="msg-main">
+              <div class="msg-t">周牧<span class="msg-type">私信</span><time>昨天</time></div>
+              <div class="msg-d">公告第二期的文案我改完了，你看下语气是不是太重。</div>
+            </div>
+            <span class="unread"></span>
+          </button>
+        </div>
+      </section>
+
+      <section class="view" data-view="notice">
+        <div class="view-head">
+          <div>
+            <h1 class="view-title">公告</h1>
+            <p class="view-sub">平台变更与规则更新，置顶内容优先展示。</p>
+          </div>
+        </div>
+
+        <div class="notice is-pin is-open" data-s="平台 v3.2 发布 全局搜索 跨类型检索 置顶">
+          <button class="notice-head" aria-expanded="true">
+            <span class="notice-ico"><svg class="ico"><use href="#i-pin"/></svg></span>
+            <div class="notice-main">
+              <div class="notice-t">平台 v3.2 发布：全局搜索支持跨类型检索 <span class="pill">置顶</span></div>
+              <div class="notice-d">2026-10-24 · 产品团队</div>
+            </div>
+            <svg class="ico notice-chev"><use href="#i-chev"/></svg>
+          </button>
+          <div class="notice-body"><div><p>本次更新后，搜索框可同时命中<b>好友、消息与公告</b>三类内容，支持按类型分组查看。使用 <b>/</b> 可随时唤起搜索，<b>↑ ↓</b> 选择结果、<b>Enter</b> 直达目标页面。</p></div></div>
+        </div>
+
+        <div class="notice" data-s="创作者激励计划 第二期 开放 报名">
+          <button class="notice-head" aria-expanded="false">
+            <span class="notice-ico"><svg class="ico"><use href="#i-zap"/></svg></span>
+            <div class="notice-main">
+              <div class="notice-t">创作者激励计划第二期开放报名 <span class="pill ok">进行中</span></div>
+              <div class="notice-d">2026-10-20 · 运营团队</div>
+            </div>
+            <svg class="ico notice-chev"><use href="#i-chev"/></svg>
+          </button>
+          <div class="notice-body"><div><p>第二期面向设计与工程方向的创作者，周期 <b>12 周</b>，提供流量扶持与专题位曝光。报名截止 <b>11 月 8 日</b>，在个人主页的「创作中心」提交作品集即可。</p></div></div>
+        </div>
+
+        <div class="notice" data-s="隐私政策 更新 说明 数据 权限">
+          <button class="notice-head" aria-expanded="false">
+            <span class="notice-ico"><svg class="ico"><use href="#i-globe"/></svg></span>
+            <div class="notice-main">
+              <div class="notice-t">隐私政策更新说明</div>
+              <div class="notice-d">2026-10-12 · 法务团队</div>
+            </div>
+            <svg class="ico notice-chev"><use href="#i-chev"/></svg>
+          </button>
+          <div class="notice-body"><div><p>本次修订明确了搜索记录的本地保存范围，并说明内容推荐所用的字段。<b>不会</b>将你的私信内容用于任何推荐计算。修订版于 <b>11 月 1 日</b>生效。</p></div></div>
+        </div>
+
+        <div class="notice" data-s="系统维护 通知 停机 时间窗">
+          <button class="notice-head" aria-expanded="false">
+            <span class="notice-ico"><svg class="ico"><use href="#i-clock"/></svg></span>
+            <div class="notice-main">
+              <div class="notice-t">系统维护通知：11 月 3 日 02:00–04:00</div>
+              <div class="notice-d">2026-10-08 · 基础架构</div>
+            </div>
+            <svg class="ico notice-chev"><use href="#i-chev"/></svg>
+          </button>
+          <div class="notice-body"><div><p>维护窗口内消息推送会延迟，已登录会话不受影响。恢复后积压的推送会在 <b>10 分钟内</b>补齐，无需重新登录。</p></div></div>
+        </div>
+      </section>
+
+      <section class="view" data-view="friends">
+        <div class="view-head">
+          <div>
+            <h1 class="view-title">好友</h1>
+            <p class="view-sub">6 位好友，其中 4 位当前在线。点击卡片查看资料。</p>
+          </div>
+          <div class="seg" id="friendSeg">
+            <button class="is-active" data-fseg="all">全部</button>
+            <button data-fseg="on">在线</button>
+            <button data-fseg="recent">最近活跃</button>
+          </div>
+        </div>
+
+        <div class="search" style="margin-bottom:16px;max-width:340px">
+          <svg class="ico"><use href="#i-search"/></svg>
+          <input id="friendSearch" type="search" placeholder="在好友中查找…" aria-label="查找好友">
+        </div>
+
+        <div class="friend-grid" id="friendGrid">
+          <button class="friend reveal" data-friend="f1" data-state="on" data-s="林砚 产品设计师 上海 设计系统 组件库">
+            <div class="friend-top">
+              <span class="av av-lg" data-on="on" style="--h:258"><span>林</span></span>
+              <div>
+                <div class="friend-name">林砚</div>
+                <div class="friend-role">产品设计师</div>
+              </div>
+            </div>
+            <p class="friend-bio">在做一套可落地的设计系统，关注信息层级与组件语义。</p>
+            <div class="friend-foot"><span>共同好友 12</span><span class="pill ok">在线</span></div>
+          </button>
+
+          <button class="friend reveal" data-friend="f2" data-state="on" data-s="苏栖 前端工程师 性能 动画 React">
+            <div class="friend-top">
+              <span class="av av-lg" data-on="on" style="--h:196"><span>苏</span></span>
+              <div>
+                <div class="friend-name">苏栖</div>
+                <div class="friend-role">前端工程师</div>
+              </div>
+            </div>
+            <p class="friend-bio">性能与动效，喜欢把掉帧点一个个找出来。</p>
+            <div class="friend-foot"><span>共同好友 9</span><span class="pill ok">在线</span></div>
+          </button>
+
+          <button class="friend reveal" data-friend="f3" data-state="recent" data-s="何知微 品牌设计师 色彩 字体">
+            <div class="friend-top">
+              <span class="av av-lg" data-on="away" style="--h:32"><span>何</span></span>
+              <div>
+                <div class="friend-name">何知微</div>
+                <div class="friend-role">品牌设计师</div>
+              </div>
+            </div>
+            <p class="friend-bio">色彩与字体，最近在琢磨深色界面的可读性边界。</p>
+            <div class="friend-foot"><span>共同好友 6</span><span class="pill neutral">4 分钟前</span></div>
+          </button>
+
+          <button class="friend reveal" data-friend="f4" data-state="on" data-s="周牧 内容策略 文案 品牌语气">
+            <div class="friend-top">
+              <span class="av av-lg" data-on="on" style="--h:150"><span>周</span></span>
+              <div>
+                <div class="friend-name">周牧</div>
+                <div class="friend-role">内容策略</div>
+              </div>
+            </div>
+            <p class="friend-bio">负责产品语气与公告文案，讨厌形容词堆叠。</p>
+            <div class="friend-foot"><span>共同好友 15</span><span class="pill ok">在线</span></div>
+          </button>
+
+          <button class="friend reveal" data-friend="f5" data-state="recent" data-s="陈望 数据科学 搜索 召回 索引">
+            <div class="friend-top">
+              <span class="av av-lg" data-on="off" style="--h:280"><span>陈</span></span>
+              <div>
+                <div class="friend-name">陈望</div>
+                <div class="friend-role">数据科学</div>
+              </div>
+            </div>
+            <p class="friend-bio">搜索与召回，习惯先看分布再谈模型。</p>
+            <div class="friend-foot"><span>共同好友 3</span><span class="pill neutral">昨天</span></div>
+          </button>
+
+          <button class="friend reveal" data-friend="f6" data-state="on" data-s="沈亦 交互设计 动效 手势">
+            <div class="friend-top">
+              <span class="av av-lg" data-on="on" style="--h:322"><span>沈</span></span>
+              <div>
+                <div class="friend-name">沈亦</div>
+                <div class="friend-role">交互设计</div>
+              </div>
+            </div>
+            <p class="friend-bio">做手势与转场，主张动效只解决方向感问题。</p>
+            <div class="friend-foot"><span>共同好友 8</span><span class="pill ok">在线</span></div>
+          </button>
+        </div>
+      </section>
+
+      <section class="view" data-view="profile">
+        <div class="cover">
+          <span class="ver-label"></span>
+        </div>
+
+        <div class="profile-body">
+          <div class="profile-top">
+            <span class="av av-xl profile-av" style="--h:38"><span>沈</span></span>
+            <div class="profile-id">
+              <div class="profile-name">沈砚舟<svg class="ico ico-14" style="color:var(--amber)"><use href="#i-check"/></svg></div>
+              <div class="profile-handle">@yenzhou · 独立设计师</div>
+            </div>
+            <div style="display:flex;gap:8px;padding-bottom:4px">
+              <button class="btn btn-primary" data-act="edit">编辑资料</button>
+              <button class="btn btn-ghost" data-act="share">分享主页</button>
+            </div>
+          </div>
+
+          <p class="profile-bio">做界面系统与信息结构。相信克制比炫技更难，也更有用。目前在上海，专注深色界面下的可读性与动效节奏。</p>
+          <div class="profile-meta">
+            <span><svg class="ico ico-14"><use href="#i-pin"/></svg>上海</span>
+            <span><svg class="ico ico-14"><use href="#i-globe"/></svg>yenzhou.design</span>
+            <span><svg class="ico ico-14"><use href="#i-clock"/></svg>2021 年 3 月加入</span>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><div class="stat-k">关注</div><div class="stat-v" data-count="386">0</div></div>
+            <div class="stat"><div class="stat-k">粉丝</div><div class="stat-v" data-count="12400">0</div></div>
+            <div class="stat"><div class="stat-k">获赞</div><div class="stat-v" data-count="48200">0</div></div>
+          </div>
+
+          <div class="p-tabs">
+            <button class="p-tab is-active" data-ptab="works">动态 24</button>
+            <button class="p-tab" data-ptab="saved">收藏 86</button>
+            <button class="p-tab" data-ptab="about">关于</button>
+          </div>
+
+          <div class="p-panel is-active" data-ppanel="works">
+            <div class="work-grid">
+              <article class="work reveal">
+                <div class="work-img" style="--fig:linear-gradient(140deg,#3A2C1C,#0B0D12 68%)"></div>
+                <div class="work-body"><div class="work-t">深色界面的三级文字分级</div><div class="work-d"><span>1.2k 阅读</span><span>86 赞</span></div></div>
+              </article>
+              <article class="work reveal">
+                <div class="work-img" style="--fig:linear-gradient(140deg,#1C2A3A,#0B0D12 68%)"></div>
+                <div class="work-body"><div class="work-t">列表动效的性能预算表</div><div class="work-d"><span>2.4k 阅读</span><span>134 赞</span></div></div>
+              </article>
+              <article class="work reveal">
+                <div class="work-img" style="--fig:linear-gradient(140deg,#2B1C36,#0B0D12 68%)"></div>
+                <div class="work-body"><div class="work-t">一个强调色的九种用法</div><div class="work-d"><span>3.1k 阅读</span><span>208 赞</span></div></div>
+              </article>
+              <article class="work reveal">
+                <div class="work-img" style="--fig:linear-gradient(140deg,#1C332B,#0B0D12 68%)"></div>
+                <div class="work-body"><div class="work-t">从 4 层到 3 层：主页重构</div><div class="work-d"><span>1.8k 阅读</span><span>97 赞</span></div></div>
+              </article>
+            </div>
+          </div>
+
+          <div class="p-panel" data-ppanel="saved">
+            <div class="work-grid">
+              <article class="work reveal">
+                <div class="work-img" style="--fig:linear-gradient(140deg,#243040,#0B0D12 68%)"></div>
+                <div class="work-body"><div class="work-t">苏栖：滚动掉帧的 8 个来源</div><div class="work-d"><span>收藏于 3 天前</span></div></div>
+              </article>
+              <article class="work reveal">
+                <div class="work-img" style="--fig:linear-gradient(140deg,#3A2A1C,#0B0D12 68%)"></div>
+                <div class="work-body"><div class="work-t">何知微：深色模式色板</div><div class="work-d"><span>收藏于 1 周前</span></div></div>
+              </article>
+            </div>
+          </div>
+
+          <div class="p-panel" data-ppanel="about">
+            <div class="card" style="max-width:620px">
+              <div class="card-head"><svg class="ico"><use href="#i-user"/></svg><h3>关于</h3></div>
+              <p style="margin:0;font-size:12.5px;line-height:1.8;color:var(--t2)">十一年界面设计经验，前两家公司分别负责设计系统与内容平台。目前以独立设计师身份参与产品早期架构，长期关注深色界面的可读性、动效节奏与信息密度。写作以复盘为主，尽量给出可验证的数字。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <button class="to-top" id="toTop" aria-label="回到顶部"><svg class="ico"><use href="#i-up"/></svg></button>
+  </main>
+
+  <aside class="right">
+    <div class="card me-card">
+      <div class="me-row">
+        <span class="av av-md" style="--h:38"><span>沈</span></span>
+        <div style="min-width:0">
+          <div class="me-name">沈砚舟</div>
+          <div class="me-sub">@yenzhou · 独立设计师</div>
+        </div>
+      </div>
+      <div class="me-stats">
+        <div><b>24</b>动态</div>
+        <div><b>86</b>收藏</div>
+        <div><b>4</b>草稿</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg class="ico"><use href="#i-megaphone"/></svg><h3>公告</h3>
+        <button class="link" data-nav="notice">全部</button>
+      </div>
+      <button class="notice-mini" data-nav="notice" data-s="v3.2 发布 全局搜索">
+        <span class="nm-dot"></span>
+        <span style="min-width:0">
+          <span class="nm-t">平台 v3.2 发布：全局搜索支持跨类型检索</span>
+          <span class="nm-d">2026-10-24 · 产品团队</span>
+        </span>
+      </button>
+      <button class="notice-mini" data-nav="notice" data-s="创作者激励计划 第二期">
+        <span class="nm-dot"></span>
+        <span style="min-width:0">
+          <span class="nm-t">创作者激励计划第二期开放报名</span>
+          <span class="nm-d">2026-10-20 · 运营团队</span>
+        </span>
+      </button>
+      <button class="notice-mini" data-nav="notice" data-s="系统维护 通知">
+        <span class="nm-dot" style="background:rgba(255,255,255,.22)"></span>
+        <span style="min-width:0">
+          <span class="nm-t">系统维护通知：11 月 3 日 02:00–04:00</span>
+          <span class="nm-d">2026-10-08 · 基础架构</span>
+        </span>
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg class="ico"><use href="#i-users"/></svg><h3>在线好友</h3>
+        <button class="link" data-nav="friends">全部</button>
+      </div>
+      <div class="f-row">
+        <span class="av av-sm" data-on="on" style="--h:258"><span>林</span></span>
+        <div style="min-width:0"><div class="f-name">林砚</div><div class="f-sub">产品设计师</div></div>
+        <button class="f-btn" data-follow>关注</button>
+      </div>
+      <div class="f-row">
+        <span class="av av-sm" data-on="on" style="--h:196"><span>苏</span></span>
+        <div style="min-width:0"><div class="f-name">苏栖</div><div class="f-sub">前端工程师</div></div>
+        <button class="f-btn" data-follow>关注</button>
+      </div>
+      <div class="f-row">
+        <span class="av av-sm" data-on="on" style="--h:150"><span>周</span></span>
+        <div style="min-width:0"><div class="f-name">周牧</div><div class="f-sub">内容策略</div></div>
+        <button class="f-btn" data-follow>关注</button>
+      </div>
+      <div class="f-row">
+        <span class="av av-sm" data-on="on" style="--h:322"><span>沈</span></span>
+        <div style="min-width:0"><div class="f-name">沈亦</div><div class="f-sub">交互设计</div></div>
+        <button class="f-btn" data-follow>关注</button>
+      </div>
+    </div>
+
+    <div class="rail-foot">
+      Élan 演示环境 · 内容为示例数据<br>
+      设计与实现：深色界面 · 单一强调色 · 合成器动画
+    </div>
+  </aside>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <h3>好友资料</h3>
+    <button class="icon-btn" id="drawerClose" aria-label="关闭"><svg class="ico"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="d-hero">
+    <span class="av av-xl" id="dAv" style="--h:258"><span>林</span></span>
+    <div>
+      <div class="d-name" id="dName">林砚</div>
+      <div class="d-role" id="dRole">产品设计师 · 在线</div>
+    </div>
+  </div>
+  <p class="d-bio" id="dBio"></p>
+  <div class="d-grid">
+    <div class="d-cell"><b id="dMutual">12</b><span>共同好友</span></div>
+    <div class="d-cell"><b id="dPosts">86</b><span>动态</span></div>
+    <div class="d-cell"><b id="dSince">2022</b><span>加入</span></div>
+  </div>
+  <div class="d-label">最近消息</div>
+  <div class="d-cell" style="padding:12px">
+    <div style="font-size:12.5px;line-height:1.7;color:var(--t2)" id="dMsg">主页那版改稿我看了，交互稿明早发你。</div>
+  </div>
+  <div class="d-acts">
+    <button class="btn btn-primary" data-dm><svg class="ico ico-14"><use href="#i-send"/></svg>发消息</button>
+    <button class="btn btn-ghost" data-proto>查看主页</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"><svg class="ico ico-14"><use href="#i-check"/></svg><span id="toastText">已完成</span></div>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(s,r){ return (r||document).querySelector(s); };
+  var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+
+  var stream = $('#stream');
+  var searchBox = $('#searchBox');
+  var searchInput = $('#searchInput');
+  var searchPanel = $('#searchPanel');
+  var progressBar = $('#progressBar');
+  var toTop = $('#toTop');
+  var toastEl = $('#toast');
+  var toastText = $('#toastText');
+  var drawer = $('#drawer');
+  var scrim = $('#scrim');
+
+  var toastTimer = null;
+  function toast(msg){
+    toastText.textContent = msg;
+    toastEl.classList.add('is-on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove('is-on'); }, 2200);
+  }
+
+  /* ---------- reveal ---------- */
+  var io = null;
+  if ('IntersectionObserver' in window){
+    io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { root: stream, rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
+    $$('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    $$('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+
+  /* ---------- view switching ---------- */
+  var navButtons = $$('[data-nav]');
+  function setView(name, opts){
+    opts = opts || {};
+    $$('.view').forEach(function(v){ v.classList.toggle('is-active', v.dataset.view === name); });
+    $$('.rail-btn[data-nav], .nav-item[data-nav]').forEach(function(b){
+      b.classList.toggle('is-active', b.dataset.nav === name);
+    });
+    $$('.reveal:not(.in)').forEach(function(el){ if (io) io.observe(el); else el.classList.add('in'); });
+    if (!opts.keepScroll) stream.scrollTo({ top: 0, behavior: 'smooth' });
+    if (name === 'profile') startCountUp();
+    if (name === 'latest') resetMsgBadge();
+    var cur = $('.view.is-active');
+    if (cur) $$('.reveal', cur).forEach(function(el){ if (io && !el.classList.contains('in')) io.observe(el); });
+  }
+  document.addEventListener('click', function(e){
+    var nb = e.target.closest('[data-nav]');
+    if (nb){ setView(nb.dataset.nav); closeSearch(); return; }
+  });
+
+  /* ---------- count up ---------- */
+  var counted = false;
+  function fmtNum(n){
+    if (n >= 10000) return (n/1000).toFixed(1).replace(/\.0$/,'') + 'k';
+    return n.toLocaleString('en-US');
+  }
+  function startCountUp(){
+    if (counted) return;
+    counted = true;
+    $$('[data-count]').forEach(function(el){
+      var target = Number(el.dataset.count) || 0;
+      var t0 = performance.now(), dur = 950;
+      function step(t){
+        var p = Math.min(1, (t - t0)/dur);
+        var e = 1 - Math.pow(1 - p, 3);
+        el.textContent = fmtNum(Math.round(target * e));
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  /* ---------- likes / saves ---------- */
+  function toggleCount(btn){
+    var span = btn.querySelector('span');
+    var n = Number(btn.dataset.n) || 0;
+    var on = btn.classList.toggle('is-on');
+    btn.dataset.n = String(on ? n + 1 : n - 1);
+    if (span) span.textContent = btn.dataset.n;
+    return on;
+  }
+  function burst(host){
+    var r = host.getBoundingClientRect();
+    var wrap = document.createElement('span');
+    wrap.className = 'burst';
+    wrap.style.left = (r.left + r.width/2) + 'px';
+    wrap.style.top = (r.top + r.height/2) + 'px';
+    document.body.appendChild(wrap);
+    for (var i = 0; i < 10; i++){
+      var p = document.createElement('i');
+      wrap.appendChild(p);
+      var a = (Math.PI * 2 * i)/10 + Math.random()*0.5;
+      var d = 16 + Math.random()*22;
+      p.animate([
+        { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+        { transform: 'translate(calc(-50% + ' + (Math.cos(a)*d).toFixed(1) + 'px),calc(-50% + ' + (Math.sin(a)*d).toFixed(1) + 'px)) scale(.2)', opacity: 0 }
+      ], { duration: 480 + Math.random()*220, easing: 'cubic-bezier(.2,0,0,1)', fill: 'forwards' });
+    }
+    setTimeout(function(){ wrap.remove(); }, 780);
+  }
+  document.addEventListener('click', function(e){
+    var like = e.target.closest('.act.like');
+    if (like){
+      var on = toggleCount(like);
+      if (on) burst(like);
+      return;
+    }
+    var save = e.target.closest('.act.save');
+    if (save){
+      var son = toggleCount(save);
+      toast(son ? '已加入收藏' : '已取消收藏');
+      return;
+    }
+    var act = e.target.closest('.act');
+    if (act && !act.classList.contains('more')){ toast('这条互动已记录'); }
+  });
+
+  /* ---------- composer ---------- */
+  var composer = $('#composerText');
+  var composerCount = $('#composerCount');
+  var feed = $('#feed');
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+    });
+  }
+  composer.addEventListener('input', function(){
+    composer.style.height = 'auto';
+    composer.style.height = Math.min(composer.scrollHeight, 200) + 'px';
+    composerCount.textContent = composer.value.length + ' / 500';
+    if (composer.value.length > 500){
+      composerCount.style.color = 'var(--danger)';
+    } else {
+      composerCount.style.color = '';
+    }
+  });
+  function publish(){
+    var text = composer.value.trim();
+    if (!text){ toast('请先输入内容'); composer.focus(); return; }
+    var node = document.createElement('article');
+    node.className = 'post';
+    node.setAttribute('data-kb', '');
+    node.setAttribute('data-tags', 'following');
+    node.setAttribute('data-s', '沈砚舟 ' + text);
+    node.style.opacity = '0';
+    node.style.transform = 'translateY(-10px)';
+    node.innerHTML =
+      '<div class="post-head">' +
+        '<span class="av av-md" style="--h:38"><span>沈</span></span>' +
+        '<div class="post-id">' +
+          '<div class="post-name">沈砚舟<svg class="ico ico-14"><use href="#i-check"/></svg></div>' +
+          '<div class="post-meta">刚刚发布</div>' +
+        '</div>' +
+        '<button class="icon-btn" aria-label="更多操作"><svg class="ico"><use href="#i-more"/></svg></button>' +
+      '</div>' +
+      '<p class="post-body">' + esc(text) + '</p>' +
+      '<div class="post-actions">' +
+        '<button class="act like" data-n="0"><svg class="ico ico-14"><use href="#i-heart"/></svg><span>0</span></button>' +
+        '<button class="act" data-n="0"><svg class="ico ico-14"><use href="#i-comment"/></svg><span>0</span></button>' +
+        '<button class="act save" data-n="0"><svg class="ico ico-14"><use href="#i-bookmark"/></svg><span>0</span></button>' +
+        '<button class="act more" aria-label="分享"><svg class="ico ico-14"><use href="#i-share"/></svg></button>' +
+      '</div>';
+    feed.insertBefore(node, feed.firstChild);
+    requestAnimationFrame(function(){
+      node.style.transition = 'opacity .42s cubic-bezier(.2,0,0,1),transform .42s cubic-bezier(.2,0,0,1)';
+      node.style.opacity = '1';
+      node.style.transform = 'none';
+    });
+    composer.value = '';
+    composer.style.height = 'auto';
+    composerCount.textContent = '0 / 500';
+    composerCount.style.color = '';
+    toast('已发布到你的时间线');
+    stream.scrollTo({ top: 0, behavior: 'smooth' });
+    if (activeFilter !== 'all'){ activeFilter = 'all'; syncChips(); applyFilter(); }
+  }
+  $('#publishBtn').addEventListener('click', publish);
+  composer.addEventListener('keydown', function(e){
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter'){ e.preventDefault(); publish(); }
+  });
+
+  /* ---------- feed filter ---------- */
+  var activeFilter = 'all';
+  function syncChips(){
+    $$('#feedChips .chip').forEach(function(c){ c.classList.toggle('is-active', c.dataset.filter === activeFilter); });
+  }
+  function applyFilter(){
+    var i = 0;
+    $$('#feed .post').forEach(function(p){
+      var tags = (p.dataset.tags || '') + ' all';
+      var show = activeFilter === 'all' || tags.indexOf(activeFilter) !== -1;
+      if (show){
+        p.style.display = '';
+        p.style.transition = 'opacity .3s var(--ease),transform .3s var(--ease)';
+        p.style.transitionDelay = (i++ * 26) + 'ms';
+        p.style.opacity = '1';
+        p.style.transform = 'none';
+      } else {
+        p.style.display = 'none';
+      }
+    });
+  }
+  $('#feedChips').addEventListener('click', function(e){
+    var chip = e.target.closest('.chip');
+    if (!chip) return;
+    activeFilter = chip.dataset.filter;
+    syncChips();
+    applyFilter();
+  });
+  // side "热门讨论 / 我的收藏" chips
+  $$('[data-chip]').forEach(function(b){
+    b.addEventListener('click', function(){
+      setView('home');
+      if (b.dataset.chip === 'hot'){ activeFilter = 'hot'; }
+      else { activeFilter = 'all'; toast('收藏内容已同步到个人主页'); }
+      syncChips(); applyFilter();
+    });
+  });
+
+  /* ---------- notice accordion ---------- */
+  document.addEventListener('click', function(e){
+    var head = e.target.closest('.notice-head');
+    if (!head) return;
+    var n = head.closest('.notice');
+    var open = n.classList.toggle('is-open');
+    head.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  /* ---------- messages ---------- */
+  var msgSeg = $('#msgSeg');
+  function filterMsgs(kind){
+    $$('#msgList .msg').forEach(function(m){
+      m.style.display = (kind === 'all' || m.dataset.kind === kind) ? '' : 'none';
+    });
+  }
+  msgSeg.addEventListener('click', function(e){
+    var b = e.target.closest('[data-seg]');
+    if (!b) return;
+    $$('#msgSeg button').forEach(function(x){ x.classList.toggle('is-active', x === b); });
+    filterMsgs(b.dataset.seg);
+  });
+  function resetMsgBadge(){
+    var d = $('.rail-btn[data-nav="latest"] .rail-dot');
+    if (d) d.style.display = 'none';
+  }
+  document.addEventListener('click', function(e){
+    var msg = e.target.closest('.msg');
+    if (!msg) return;
+    msg.classList.remove('is-unread');
+    var dot = msg.querySelector('.unread');
+    if (dot) dot.style.display = 'none';
+    openFriend({
+      name: msg.dataset.user,
+      role: msg.querySelector('.msg-type').textContent,
+      bio: msg.querySelector('.msg-d').textContent,
+      h: msg.querySelector('.av').style.getPropertyValue('--h') || '258',
+      initial: msg.querySelector('.av span').textContent,
+      msg: msg.querySelector('.msg-d').textContent
+    });
+  });
+
+  /* ---------- friends ---------- */
+  var friendSeg = $('#friendSeg');
+  var friendSearch = $('#friendSearch');
+  function applyFriends(){
+    var kind = (friendSeg.querySelector('.is-active') || {}).dataset ? friendSeg.querySelector('.is-active').dataset.fseg : 'all';
+    var q = (friendSearch.value || '').trim().toLowerCase();
+    $$('#friendGrid .friend').forEach(function(c){
+      var okSeg = kind === 'all' || c.dataset.state === kind;
+      var okQ = !q || (c.dataset.s || '').toLowerCase().indexOf(q) !== -1;
+      c.style.display = (okSeg && okQ) ? '' : 'none';
+    });
+  }
+  friendSeg.addEventListener('click', function(e){
+    var b = e.target.closest('[data-fseg]');
+    if (!b) return;
+    $$('#friendSeg button').forEach(function(x){ x.classList.toggle('is-active', x === b); });
+    applyFriends();
+  });
+  friendSearch.addEventListener('input', applyFriends);
+
+  var FRIENDS = {
+    f1:{ name:'林砚', role:'产品设计师 · 在线', h:'258', initial:'林', bio:'在做一套可落地的设计系统，关注信息层级与组件语义。最近在重构主页的信息结构。', mutual:'12', posts:'86', since:'2021', msg:'主页那版改稿我看了，交互稿明早发你，先别动统计区的间距。' },
+    f2:{ name:'苏栖', role:'前端工程师 · 在线', h:'196', initial:'苏', bio:'性能与动效，喜欢把掉帧点一个个找出来，也写一些渲染优化的复盘。', mutual:'9', posts:'132', since:'2020', msg:'这套入场动画的实现方式能开源吗？我想直接接进我们的组件库。' },
+    f3:{ name:'何知微', role:'品牌设计师 · 4 分钟前', h:'32', initial:'何', bio:'色彩与字体，最近在琢磨深色界面的可读性边界，以及品牌语气的收敛方式。', mutual:'6', posts:'54', since:'2022', msg:'色板已经导出，琥珀那组我调低了 4% 饱和度，深色下更耐看。' },
+    f4:{ name:'周牧', role:'内容策略 · 在线', h:'150', initial:'周', bio:'负责产品语气与公告文案，讨厌形容词堆叠，主张一句话说清一件事。', mutual:'15', posts:'97', since:'2019', msg:'公告第二期的文案我改完了，你看下语气是不是太重。' },
+    f5:{ name:'陈望', role:'数据科学 · 昨天', h:'280', initial:'陈', bio:'搜索与召回，习惯先看分布再谈模型。最近在压缩检索链路的尾部延迟。', mutual:'3', posts:'41', since:'2023', msg:'你们也在做跨类型检索吗，想交流一下索引结构。' },
+    f6:{ name:'沈亦', role:'交互设计 · 在线', h:'322', initial:'沈', bio:'做手势与转场，主张动效只解决方向感问题，其余交给布局本身。', mutual:'8', posts:'63', since:'2022', msg:'转场的缓动曲线我按你的建议改成减速曲线了。' }
+  };
+
+  var lastFocus = null;
+  function openFriend(data){
+    lastFocus = document.activeElement;
+    $('#dName').textContent = data.name;
+    $('#dRole').textContent = data.role;
+    $('#dBio').textContent = data.bio;
+    $('#dMsg').textContent = data.msg || '暂无最近消息';
+    if (data.mutual){ $('#dMutual').textContent = data.mutual; }
+    if (data.posts){ $('#dPosts').textContent = data.posts; }
+    if (data.since){ $('#dSince').textContent = data.since; }
+    var av = $('#dAv');
+    av.style.setProperty('--h', data.h || '258');
+    av.querySelector('span').textContent = data.initial || data.name.charAt(0);
+    drawer.classList.add('is-open');
+    drawer.setAttribute('aria-hidden','false');
+    scrim.classList.add('is-open');
+    setTimeout(function(){ $('#drawerClose').focus(); }, 260);
+  }
+  function closeDrawer(){
+    if (!drawer.classList.contains('is-open')) return;
+    drawer.classList.remove('is-open');
+    drawer.setAttribute('aria-hidden','true');
+    scrim.classList.remove('is-open');
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  document.addEventListener('click', function(e){
+    var card = e.target.closest('.friend');
+    if (card){
+      var d = FRIENDS[card.dataset.friend];
+      if (d) openFriend(d);
+      return;
+    }
+    var nb = e.target.closest('.notice-mini');
+    if (nb && nb.dataset.s && !nb.dataset.nav){ /* noop */ }
+  });
+  $('#drawerClose').addEventListener('click', closeDrawer);
+  scrim.addEventListener('click', closeDrawer);
+  document.addEventListener('click', function(e){
+    if (e.target.closest('[data-dm]')){
+      toast('已打开与 ' + $('#dName').textContent + ' 的对话');
+      closeDrawer();
+    }
+    if (e.target.closest('[data-proto]')){
+      closeDrawer();
+      setView('profile');
+      toast('已跳转到个人主页视图');
+    }
+    if (e.target.closest('[data-follow]')){
+      var b = e.target.closest('[data-follow]');
+      var on = b.classList.toggle('is-on');
+      b.textContent = on ? '已关注' : '关注';
+      toast(on ? '已关注该好友' : '已取消关注');
+    }
+  });
+
+  /* ---------- profile tabs ---------- */
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-ptab]');
+    if (!t) return;
+    $$('.p-tab').forEach(function(x){ x.classList.toggle('is-active', x === t); });
+    $$('.p-panel').forEach(function(p){ p.classList.toggle('is-active', p.dataset.ppanel === t.dataset.ptab); });
+    var cur = $('.p-panel.is-active');
+    if (cur && io) $$('.reveal', cur).forEach(function(el){ io.observe(el); });
+  });
+
+  /* ---------- misc actions ---------- */
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('[data-act]');
+    if (!a) return;
+    var kind = a.dataset.act;
+    if (kind === 'compose'){
+      setView('home');
+      setTimeout(function(){ composer.focus(); }, 260);
+    } else if (kind === 'settings'){
+      toast('设置面板在演示版本中暂未开放');
+    } else if (kind === 'attach'){
+      toast('附件功能在演示版本中仅作示意');
+    } else if (kind === 'edit'){
+      toast('资料编辑在演示版本中仅作示意');
+    } else if (kind === 'share'){
+      toast('主页链接已复制');
+    }
+  });
+
+  /* ---------- search ---------- */
+  var searchData = [];
+  function buildIndex(){
+    searchData = [];
+    $$('[data-s]').forEach(function(el){
+      if (el.closest('.s-panel')) return;
+      var view = el.closest('.view');
+      var kind = el.classList.contains('friend') ? '好友'
+        : el.classList.contains('msg') ? '消息'
+        : el.classList.contains('notice') ? '公告'
+        : el.classList.contains('notice-mini') ? '公告'
+        : el.classList.contains('post') ? '动态' : '内容';
+      searchData.push({
+        el: el,
+        text: el.dataset.s,
+        kind: kind,
+        view: view ? view.dataset.view : (el.dataset.nav || 'notice'),
+        friend: el.dataset.friend || null
+      });
+    });
+  }
+  buildIndex();
+
+  var cursor = -1;
+  var currentRows = [];
+  function renderSearch(q){
+    var query = (q || '').trim().toLowerCase();
+    if (!query){ closeSearch(); return; }
+    var hits = searchData.filter(function(d){ return d.text.toLowerCase().indexOf(query) !== -1; }).slice(0, 9);
+    currentRows = hits;
+    cursor = -1;
+    if (!hits.length){
+      searchPanel.innerHTML = '<div class="s-empty">没有找到与「' + esc(q) + '」相关的内容</div>';
+    } else {
+      var html = '<div class="s-group">' + hits.length + ' 条结果 · ↑ ↓ 选择 · Enter 打开</div>';
+      hits.forEach(function(d, i){
+        var label = d.text.length > 34 ? d.text.slice(0, 34) + '…' : d.text;
+        html += '<button class="s-row" data-i="' + i + '" role="option">' +
+          '<span class="s-kind">' + d.kind + '</span>' +
+          '<span class="s-row-main"><span class="s-row-t">' + esc(label) + '</span>' +
+          '<span class="s-row-d">前往 ' + (d.view === 'home' ? '首页' : d.view === 'latest' ? '最新消息' : d.view === 'notice' ? '公告' : d.view === 'friends' ? '好友' : '个人主页') + '</span></span>' +
+          '<svg class="ico ico-14" style="color:var(--t3)"><use href="#i-arrow-r"/></svg>' +
+        '</button>';
+      });
+      searchPanel.innerHTML = html;
+    }
+    searchPanel.classList.add('is-open');
+  }
+  function closeSearch(){
+    searchPanel.classList.remove('is-open');
+    cursor = -1;
+  }
+  function markCursor(){
+    $$('.s-row', searchPanel).forEach(function(r, i){ r.classList.toggle('is-cursor', i === cursor); });
+  }
+  function openRow(i){
+    var d = currentRows[i];
+    if (!d) return;
+    closeSearch();
+    if (d.friend && FRIENDS[d.friend] && d.view === 'friends'){
+      setView('friends');
+      setTimeout(function(){ openFriend(FRIENDS[d.friend]); }, 220);
+      return;
+    }
+    if (d.view === 'notice' && d.el.classList.contains('notice')){
+      setView('notice');
+      if (!d.el.classList.contains('is-open')){
+        d.el.classList.add('is-open');
+        var h = d.el.querySelector('.notice-head');
+        if (h) h.setAttribute('aria-expanded','true');
+      }
+      return;
+    }
+    setView(d.view, { keepScroll: false });
+    if (d.el.id){
+      setTimeout(function(){
+        var t = document.getElementById(d.el.id);
+        if (!t) return;
+        t.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        t.classList.add('flash');
+        setTimeout(function(){ t.classList.remove('flash'); }, 950);
+      }, 260);
+    }
+  }
+  searchInput.addEventListener('input', function(){
+    var v = searchInput.value;
+    searchBox.classList.toggle('has-value', !!v);
+    renderSearch(v);
+  });
+  searchInput.addEventListener('focus', function(){
+    if (searchInput.value.trim()) renderSearch(searchInput.value);
+  });
+  $('#searchClear').addEventListener('click', function(){
+    searchInput.value = '';
+    searchBox.classList.remove('has-value');
+    closeSearch();
+    searchInput.focus();
+  });
+  searchPanel.addEventListener('click', function(e){
+    var row = e.target.closest('.s-row');
+    if (row) openRow(Number(row.dataset.i));
+  });
+
+  /* ---------- keyboard ---------- */
+  var kbIndex = -1;
+  function kbCards(){
+    return $$('.view.is-active [data-kb]').filter(function(c){ return c.offsetParent !== null; });
+  }
+  function moveKb(dir){
+    var cards = kbCards();
+    if (!cards.length) return;
+    kbIndex = Math.max(0, Math.min(cards.length - 1, kbIndex + dir));
+    cards.forEach(function(c, i){ c.classList.toggle('is-kb', i === kbIndex); });
+    cards[kbIndex].scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+  document.addEventListener('keydown', function(e){
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    var typing = tag === 'INPUT' || tag === 'TEXTAREA';
+    var panelOpen = searchPanel.classList.contains('is-open');
+
+    if (e.key === '/' && !typing){
+      e.preventDefault();
+      searchInput.focus();
+      return;
+    }
+    if (e.key === 'Escape'){
+      if (panelOpen){ closeSearch(); searchInput.blur(); return; }
+      if (drawer.classList.contains('is-open')){ closeDrawer(); return; }
+      if (typing){ document.activeElement.blur(); return; }
+      return;
+    }
+    if (panelOpen){
+      if (e.key === 'ArrowDown'){
+        e.preventDefault();
+        cursor = Math.min(currentRows.length - 1, cursor + 1);
+        markCursor();
+        return;
+      }
+      if (e.key === 'ArrowUp'){
+        e.preventDefault();
+        cursor = Math.max(0, cursor - 1);
+        markCursor();
+        return;
+      }
+      if (e.key === 'Enter' && cursor >= 0){ e.preventDefault(); openRow(cursor); return; }
+    }
+    if (typing) return;
+    var k = e.key.toLowerCase();
+    if (k === 'j'){ e.preventDefault(); moveKb(1); }
+    if (k === 'k'){ e.preventDefault(); moveKb(-1); }
+    if (e.key === 'Enter'){
+      var cur = $('.view.is-active .post.is-kb');
+      if (cur){ e.preventDefault(); toast('已打开该条动态'); }
+    }
+  });
+
+  /* ---------- scroll progress ---------- */
+  var ticking = false;
+  function onScroll(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){
+      var max = stream.scrollHeight - stream.clientHeight;
+      var p = max > 0 ? stream.scrollTop / max : 0;
+      progressBar.style.transform = 'scaleX(' + Math.min(1, Math.max(0, p)).toFixed(4) + ')';
+      toTop.classList.toggle('is-on', stream.scrollTop > 380);
+      ticking = false;
+    });
+  }
+  stream.addEventListener('scroll', onScroll, { passive: true });
+  toTop.addEventListener('click', function(){ stream.scrollTo({ top: 0, behavior: 'smooth' }); });
+  onScroll();
+
+  /* ---------- init ---------- */
+  var dot = $('.rail-btn[data-nav="latest"] .rail-dot');
+  if (dot) dot.style.display = '';
+  applyFriends();
+  applyFilter();
+})();
+</script>
+</body>
+</html>
