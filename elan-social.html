@@ -1918,63 +1918,288 @@ html[data-hide-right="on"] .right{display:none}
   .app{grid-template-rows:minmax(0,1fr) auto}
 }
 
+/* ===== Élan accounts / timeline / direct messages ===== */
+
+/* ---------- login gate ---------- */
+.gate{
+  position:fixed;inset:0;z-index:900;display:grid;place-items:center;padding:24px;
+  background:radial-gradient(120% 90% at 50% -10%,rgba(255,182,92,.10),transparent 55%),rgba(6,7,10,.96);
+  opacity:0;transition:opacity .28s var(--ease);overflow:auto;backdrop-filter:blur(6px);
+}
+.gate.is-on{opacity:1}
+.gate-card{
+  width:min(440px,100%);padding:30px 30px 26px;border-radius:var(--r-xl);
+  border:1px solid var(--line-2);background:linear-gradient(180deg,rgba(22,25,32,.98),rgba(12,14,19,.98));
+  box-shadow:0 40px 90px rgba(0,0,0,.55);
+}
+.gate-brand{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--t2)}
+.gate-mark{
+  width:30px;height:30px;display:grid;place-items:center;border-radius:9px;color:#170E03;font-weight:700;
+  background:linear-gradient(150deg,var(--amber),var(--amber-2));box-shadow:0 8px 20px rgba(240,145,58,.28);
+}
+.gate-title{margin:20px 0 0;font-size:21px;letter-spacing:-.01em;color:var(--t1)}
+.gate-sub{margin:8px 0 20px;font-size:12.5px;line-height:1.7;color:var(--t2)}
+.gate .field{margin-bottom:12px}
+.gate .field label{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.gate .field input{
+  width:100%;height:40px;padding:0 12px;border-radius:10px;font-size:13.5px;color:var(--t1);
+  background:rgba(255,255,255,.045);border:1px solid var(--line);outline:none;transition:border-color .16s,background .16s;
+}
+.gate .field input:focus{border-color:var(--amber-line);background:rgba(255,255,255,.07)}
+.gate-go{width:100%;height:42px;margin-top:6px;font-size:14px}
+.gate-err{min-height:18px;font-size:12px;color:#FF8A7A;margin:6px 0 4px}
+.acc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-bottom:18px;max-height:230px;overflow:auto}
+.acc-item{
+  display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border-radius:var(--r-m);
+  border:1px solid var(--line);background:rgba(255,255,255,.025);transition:border-color .16s,background .16s,transform .16s;
+}
+.acc-item:hover{border-color:var(--line-2);background:rgba(255,255,255,.05);transform:translateY(-1px)}
+.acc-item.is-on{border-color:var(--amber-line);background:var(--amber-soft)}
+.acc-name{font-size:12px;font-weight:500;color:var(--t1);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acc-h{font-size:10.5px;color:var(--t3);text-transform:none;letter-spacing:.02em}
+
+/* ---------- direct messages: two panes ---------- */
+.im{
+  display:grid;grid-template-columns:minmax(200px,290px) minmax(0,1fr);gap:14px;
+  height:clamp(420px,calc(100dvh - 210px),760px);margin-top:4px;
+}
+.im-list,.im-thread{
+  display:flex;flex-direction:column;min-height:0;border:1px solid var(--line);
+  border-radius:var(--r-l);background:var(--ink-2);overflow:hidden;
+}
+.im-search{padding:9px;border-bottom:1px solid var(--line)}
+.im-search input{
+  width:100%;height:32px;padding:0 10px;border-radius:9px;font-size:12.5px;color:var(--t1);
+  background:rgba(255,255,255,.045);border:1px solid var(--line);outline:none;
+}
+.im-search input:focus{border-color:var(--amber-line)}
+.im-rows{flex:1;overflow-y:auto;padding:6px}
+.im-row{
+  width:100%;display:flex;align-items:center;gap:10px;padding:9px 8px;border-radius:10px;text-align:left;
+  transition:background .14s,transform .14s;
+}
+.im-row:hover{background:rgba(255,255,255,.045)}
+.im-row.is-on{background:var(--amber-soft);box-shadow:inset 2px 0 0 var(--amber)}
+.im-main{flex:1;min-width:0}
+.im-t{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--t1)}
+.im-t time{margin-left:auto;font-size:10.5px;font-weight:400;color:var(--t3);white-space:nowrap}
+.im-d{font-size:11.5px;color:var(--t3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.im-dot{
+  flex:none;min-width:17px;height:17px;padding:0 5px;border-radius:99px;display:grid;place-items:center;
+  font-size:10.5px;font-weight:600;color:#170E03;background:var(--amber);
+}
+.im-sep{padding:10px 8px 4px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.im-thread{position:relative}
+.im-head{display:flex;align-items:center;gap:10px;padding:11px 13px;border-bottom:1px solid var(--line);flex:none}
+.im-back{display:none}
+.im-log{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:7px}
+.im-day{align-self:center;font-size:10.5px;color:var(--t3);padding:2px 0 6px}
+.im-line{display:flex}
+.im-line.me{justify-content:flex-end}
+.im-bub{
+  max-width:min(74%,520px);padding:8px 12px;border-radius:13px;font-size:13px;line-height:1.62;
+  color:var(--t1);background:rgba(255,255,255,.06);border:1px solid var(--line);white-space:pre-wrap;word-break:break-word;
+}
+.im-line.me .im-bub{background:linear-gradient(150deg,rgba(255,182,92,.22),rgba(240,145,58,.16));border-color:var(--amber-line)}
+.im-foot{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);flex:none}
+.im-foot input{
+  flex:1;height:38px;padding:0 12px;border-radius:10px;font-size:13px;color:var(--t1);
+  background:rgba(255,255,255,.045);border:1px solid var(--line);outline:none;
+}
+.im-foot input:focus{border-color:var(--amber-line)}
+.im-foot .btn{height:38px}
+.im-empty,.empty-state{
+  display:grid;place-content:center;justify-items:center;gap:6px;text-align:center;padding:32px 20px;color:var(--t3);
+}
+.im-empty{flex:1}
+.im-empty-t,.empty-t{font-size:13.5px;font-weight:500;color:var(--t2)}
+.im-empty p,.empty-state p{margin:0;font-size:12px;line-height:1.7;max-width:32ch;color:var(--t3)}
+.empty-inline{font-size:12px;color:var(--t3);padding:6px 2px}
+
+/* ---------- members ---------- */
+.mem{
+  display:flex;gap:13px;align-items:flex-start;padding:15px;border-radius:var(--r-l);
+  border:1px solid var(--line);background:var(--ink-2);transition:transform .16s,border-color .16s,background .16s;
+}
+.mem:hover{transform:translateY(-2px);border-color:var(--line-2);background:var(--ink-3)}
+.mem-main{flex:1;min-width:0}
+.mem-n{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--t1)}
+.mem-role{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);border:1px solid var(--amber-line);border-radius:5px;padding:1px 5px}
+.mem-h{font-size:11.5px;color:var(--t3);margin-top:1px}
+.mem-b{margin:8px 0 0;font-size:12.5px;line-height:1.65;color:var(--t2)}
+.mem-acts{display:flex;flex-direction:column;gap:6px;flex:none}
+.mem-acts .btn{height:30px;padding:0 12px;font-size:12px}
+.mem-row{
+  display:flex;align-items:center;gap:9px;width:100%;padding:7px 4px;border-radius:9px;text-align:left;
+  transition:background .14s;
+}
+.mem-row:hover{background:rgba(255,255,255,.045)}
+.mem-row-n{font-size:12.5px;color:var(--t1);white-space:nowrap}
+.mem-row-h{font-size:10.5px;color:var(--t3);margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- admin console ---------- */
+.ms-panel.is-wide{width:min(680px,calc(100vw - 32px))}
+.acc-bar{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.acc-hint{font-size:11.5px;color:var(--t3);margin-right:auto}
+.acc-list{display:flex;flex-direction:column;gap:8px;max-height:44vh;overflow-y:auto}
+.acc-row{
+  display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:var(--r-m);
+  border:1px solid var(--line);background:rgba(255,255,255,.025);
+}
+.acc-id{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.acc-n{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--t1)}
+.acc-role{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--amber);border:1px solid var(--amber-line);border-radius:5px;padding:1px 5px}
+.acc-self{font-size:9.5px;color:var(--t3);border:1px solid var(--line-2);border-radius:5px;padding:1px 5px}
+.acc-h2{font-size:11px;color:var(--t3);margin-top:2px}
+.acc-acts{display:flex;gap:5px;flex:none}
+.acc-acts .btn{height:29px;padding:0 10px;font-size:11.5px}
+.acc-notice{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.acc-sec{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.acc-notice .field{margin-bottom:8px}
+.acc-notice .field input,.acc-notice .field textarea{
+  width:100%;padding:9px 11px;border-radius:9px;font-size:12.5px;color:var(--t1);font-family:inherit;
+  background:rgba(255,255,255,.045);border:1px solid var(--line);outline:none;resize:vertical;
+}
+.set-actions{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.set-me{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.set-me-n{font-size:13px;font-weight:500;color:var(--t1)}
+.set-me-h{font-size:11.5px;color:var(--t3)}
+
+/* ---------- odds and ends ---------- */
+.btn-danger{background:rgba(255,86,86,.14);color:#FF9C90;border:1px solid rgba(255,86,86,.35)}
+.post.is-flash{box-shadow:0 0 0 3px rgba(255,182,92,.18);border-color:var(--amber-line)}
+.post-media{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:12px}
+.post-media img{width:100%;height:100%;max-height:220px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.post-media img:only-child{grid-column:1/-1;max-height:320px}
+.cmt-wrap{margin-top:10px;border-top:1px solid var(--line);padding-top:10px;display:none}
+.cmt-wrap.is-on{display:block}
+.cmt-list{display:flex;flex-direction:column;gap:9px;margin-bottom:8px}
+.cmt{display:flex;gap:8px}
+.cmt-b{font-size:12.5px;line-height:1.6;color:var(--t2)}
+.cmt-n{font-weight:600;color:var(--t1);margin-right:6px}
+.cmt-t{display:block;font-size:10.5px;color:var(--t3);margin-top:1px}
+.cmt-form{display:flex;gap:7px}
+.cmt-form input{
+  flex:1;height:34px;padding:0 11px;border-radius:9px;font-size:12.5px;color:var(--t1);
+  background:rgba(255,255,255,.045);border:1px solid var(--line);outline:none;
+}
+.cmt-form input:focus{border-color:var(--amber-line)}
+.cmt-form .btn{height:34px;padding:0 13px;font-size:12px}
+.att-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.att{position:relative;width:74px;height:74px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.att img{width:100%;height:100%;object-fit:cover}
+.att button{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(6,7,10,.8);color:var(--t1);font-size:12px;line-height:1}
+.s-row{display:flex;align-items:center;gap:9px;width:100%;padding:7px 10px;text-align:left;border-radius:8px}
+.s-row:hover,.s-row.is-on{background:rgba(255,255,255,.05)}
+.s-row-t{font-size:12.5px;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-row-t i{font-style:normal;font-size:10.5px;color:var(--t3)}
+
+/* ---------- responsive ---------- */
+@media (max-width:1120px){
+  .im{grid-template-columns:minmax(180px,240px) minmax(0,1fr)}
+  .mem-acts{flex-direction:row}
+}
+@media (max-width:820px){
+  .im{grid-template-columns:1fr;height:calc(100dvh - 300px);min-height:360px}
+  .im-thread{display:none}
+  .im.is-thread .im-list{display:none}
+  .im.is-thread .im-thread{display:flex}
+  .im-back{display:grid}
+  .im-bub{max-width:84%}
+  .mem{flex-direction:column}
+  .mem-acts{flex-direction:row;width:100%}
+  .mem-acts .btn{flex:1}
+  .acc-row{flex-wrap:wrap}
+  .acc-acts{width:100%;justify-content:flex-end}
+  .gate-card{padding:22px}
+  .gate-title{font-size:18px}
+}
+@media (max-width:480px){
+  .gate{padding:14px}
+  .acc-grid{grid-template-columns:repeat(2,1fr)}
+  .im{height:calc(100dvh - 320px)}
+  .post-media{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .gate,.im-row,.mem,.acc-item{transition:none}
+}
+
 </style>
 <script id="elan-enhance-js">
-/* ===== Élan enhancement layer ===== */
+/* ===== Élan UI primitives ===== */
 (function () {
   "use strict";
-  var $ = function (s, r) { return (r || document).querySelector(s); };
-  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
-  var KEY = "elan.state.v1";
-  var toastEl = $("#toast"), toastText = $("#toastText"), toastTimer = null;
-  var feed = $("#feed"), composer = $("#composerText"), countEl = $("#composerCount");
-  var attachments = [];
 
-  function toast(msg) {
-    if (!toastEl) return;
-    toastText.textContent = msg;
-    toastEl.classList.add("is-on");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toastEl.classList.remove("is-on"); }, 2200);
-  }
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+
   function esc(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
       return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
     });
   }
-  function hhmm() {
-    var d = new Date();
+
+  function el(tag, cls, html) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (html != null) n.innerHTML = html;
+    return n;
+  }
+
+  var toastEl = $("#toast"), toastText = $("#toastText"), toastTimer = null;
+  function toast(msg) {
+    if (!toastEl || !toastText) { return; }
+    toastText.textContent = msg;
+    toastEl.classList.add("is-on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove("is-on"); }, 2400);
+  }
+
+  function hhmm(ts) {
+    var d = ts ? new Date(ts) : new Date();
     return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
   }
-
-  function defaults() {
-    return { likes: {}, saves: {}, comments: {}, myPosts: [], hidden: [], deleted: [],
-      settings: { motion: "on", density: "normal", font: "md", right: "on" },
-      profile: {}, dms: {} };
+  function dayKey(ts) {
+    var d = new Date(ts), n = new Date();
+    if (d.toDateString() === n.toDateString()) return "今天";
+    var y = new Date(n.getTime() - 864e5);
+    if (d.toDateString() === y.toDateString()) return "昨天";
+    return (d.getMonth() + 1) + "月" + d.getDate() + "日";
   }
-  var store;
-  try { store = Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY) || "{}")); }
-  catch (e) { store = defaults(); }
-  function persist() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
-
-  function applySettings() {
-    var s = store.settings;
-    document.documentElement.dataset.motion = s.motion === "off" ? "off" : "on";
-    document.documentElement.dataset.density = s.density === "compact" ? "compact" : "normal";
-    document.documentElement.dataset.font = s.font || "md";
-    document.documentElement.dataset.hideRight = s.right === "off" ? "on" : "off";
+  function timeAgo(ts) {
+    var s = Math.max(1, Math.floor((Date.now() - ts) / 1000));
+    if (s < 60) return "刚刚";
+    if (s < 3600) return Math.floor(s / 60) + " 分钟前";
+    if (s < 86400) return Math.floor(s / 3600) + " 小时前";
+    if (s < 86400 * 7) return Math.floor(s / 86400) + " 天前";
+    return dayKey(ts);
   }
-  applySettings();
+  function stamp(ts) {
+    var d = new Date(ts);
+    return (d.getMonth() + 1) + "月" + d.getDate() + "日 " + hhmm(ts);
+  }
+
+  function initial(name) { return String(name || "?").trim().charAt(0) || "?"; }
+  function hue(seed) {
+    var s = String(seed || ""), h = 0;
+    for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 360;
+    return h;
+  }
+  /* avatar markup: page styles use .av + --h */
+  function avatar(user, size) {
+    var h = hue(user && (user.handle || user.name));
+    return '<span class="av av-' + (size || "md") + '" style="--h:' + h + '"><span>' +
+      esc(initial(user && user.name)) + "</span></span>";
+  }
 
   /* ---------- modal ---------- */
   function openModal(opts) {
-    var wrap = document.createElement("div");
-    wrap.className = "ms";
+    var wrap = el("div", "ms");
     wrap.setAttribute("role", "dialog");
     wrap.setAttribute("aria-modal", "true");
     wrap.setAttribute("aria-label", opts.title || "对话框");
     wrap.innerHTML =
-      '<div class="ms-panel"><div class="ms-head"><h3></h3>' +
+      '<div class="ms-panel' + (opts.wide ? " is-wide" : "") + '"><div class="ms-head"><h3></h3>' +
       '<button class="icon-btn" data-close aria-label="关闭"><svg class="ico"><use href="#i-x"/></svg></button></div>' +
       '<div class="ms-body"></div><div class="ms-foot"></div></div>';
     $(".ms-head h3", wrap).textContent = opts.title || "";
@@ -1982,18 +2207,19 @@ html[data-hide-right="on"] .right{display:none}
     if (typeof opts.body === "string") body.innerHTML = opts.body;
     else if (opts.body) body.appendChild(opts.body);
     (opts.buttons || []).forEach(function (b) {
-      var btn = document.createElement("button");
-      btn.className = "btn " + (b.kind || "btn-ghost");
+      var btn = el("button", "btn " + (b.kind || "btn-ghost"));
       btn.textContent = b.label;
       btn.addEventListener("click", function () {
         if (!b.onClick || b.onClick(wrap) !== false) close();
       });
       foot.appendChild(btn);
     });
+    if (opts.onOpen) opts.onOpen(wrap);
     function close() {
       wrap.classList.remove("is-on");
       document.removeEventListener("keydown", onKey, true);
       setTimeout(function () { wrap.remove(); }, 240);
+      if (opts.onClose) opts.onClose();
     }
     function onKey(e) { if (e.key === "Escape") { e.stopPropagation(); close(); } }
     wrap.addEventListener("click", function (e) {
@@ -2005,8 +2231,8 @@ html[data-hide-right="on"] .right{display:none}
     setTimeout(function () {
       var f = wrap.querySelector("input,textarea,select");
       if (f) f.focus();
-    }, 120);
-    return { close: close, el: wrap };
+    }, 130);
+    return { close: close, el: wrap, body: body };
   }
 
   /* ---------- popover ---------- */
@@ -2019,11 +2245,9 @@ html[data-hide-right="on"] .right{display:none}
   }
   function popover(anchor, items) {
     closePop();
-    var pop = document.createElement("div");
-    pop.className = "pop";
+    var pop = el("div", "pop");
     items.forEach(function (it) {
-      var b = document.createElement("button");
-      if (it.danger) b.className = "danger";
+      var b = el("button", it.danger ? "danger" : "");
       b.innerHTML = (it.icon ? '<svg class="ico ico-14"><use href="#' + it.icon + '"/></svg>' : "") +
         "<span>" + esc(it.label) + "</span>";
       b.addEventListener("click", function (e) { e.stopPropagation(); closePop(); it.onClick(); });
@@ -2043,526 +2267,1542 @@ html[data-hide-right="on"] .right{display:none}
     pop._doc = onDoc;
   }
 
-  /* ---------- post helpers ---------- */
-  function postKey(post) { return post.dataset.s || post.id || "post-" + Date.now(); }
-  function commentBtn(post) {
-    return $$(".act", post).filter(function (b) { return b.querySelector('use[href="#i-comment"]'); })[0];
-  }
-  function syncCommentCount(post) {
-    var btn = commentBtn(post);
-    if (!btn) return;
-    var key = postKey(post);
-    if (btn.dataset.baseN === undefined) btn.dataset.baseN = btn.dataset.n || "0";
-    var n = (Number(btn.dataset.baseN) || 0) + (store.comments[key] || []).length;
-    btn.dataset.n = String(n);
-    var span = btn.querySelector("span");
-    if (span) span.textContent = String(n);
-  }
-  function ensureComments(post) {
-    var wrap = post.querySelector(".cmt-wrap");
-    if (wrap) return wrap;
-    wrap = document.createElement("div");
-    wrap.className = "cmt-wrap";
-    wrap.innerHTML = '<div class="cmt-list"></div><div class="cmt-form">' +
-      '<input type="text" placeholder="写一条评论，回车发送…" aria-label="评论">' +
-      '<button class="btn btn-primary" data-send>发送</button></div>';
-    var actions = post.querySelector(".post-actions");
-    if (actions) post.insertBefore(wrap, actions.nextSibling); else post.appendChild(wrap);
-    $("[data-send]", wrap).addEventListener("click", function () { sendComment(post); });
-    $("input", wrap).addEventListener("keydown", function (e) {
-      if (e.key === "Enter") { e.preventDefault(); sendComment(post); }
-    });
-    return wrap;
-  }
-  function renderComments(post) {
-    var wrap = ensureComments(post), list = $(".cmt-list", wrap);
-    var items = store.comments[postKey(post)] || [];
-    list.innerHTML = items.length
-      ? items.map(function (c) {
-          return '<div class="cmt"><span class="cmt-av">沈</span><div class="cmt-b">' +
-            '<span class="cmt-n">沈砚舟</span>' + esc(c.text) +
-            '<span class="cmt-t">' + esc(c.time) + "</span></div></div>";
-        }).join("")
-      : '<div style="font-size:12px;color:var(--t3);padding:4px 0 6px">还没有评论，来说第一句。</div>';
-    syncCommentCount(post);
-  }
-  function sendComment(post) {
-    var wrap = ensureComments(post), input = $("input", wrap);
-    var text = (input.value || "").trim();
-    if (!text) { input.focus(); return; }
-    var key = postKey(post);
-    store.comments[key] = store.comments[key] || [];
-    store.comments[key].push({ text: text, time: hhmm() });
-    persist();
-    input.value = "";
-    renderComments(post);
-    toast("评论已发布");
-  }
-
-  /* ---------- persistence of native likes / saves ---------- */
-  document.addEventListener("click", function (e) {
-    var like = e.target.closest("#feed .post .act.like");
-    var save = e.target.closest("#feed .post .act.save");
-    var post = (like || save) && (like || save).closest(".post");
-    if (!post) return;
-    var key = postKey(post);
-    setTimeout(function () {
-      if (like) store.likes[key] = like.classList.contains("is-on");
-      if (save) store.saves[key] = save.classList.contains("is-on");
-      persist();
-    }, 0);
-  });
-
-  /* ---------- comments open ---------- */
-  document.addEventListener("click", function (e) {
-    var btn = e.target.closest("#feed .act");
-    if (!btn || !btn.querySelector('use[href="#i-comment"]')) return;
-    e.preventDefault();
-    e.stopPropagation();
-    var post = btn.closest(".post");
-    var wrap = ensureComments(post);
-    var open = wrap.classList.toggle("is-on");
-    if (open) { renderComments(post); $("input", wrap).focus(); }
-  }, true);
-
-  /* ---------- attachments ---------- */
-  function renderAttachments() {
-    var host = $("#composerAttach");
-    if (!host) {
-      var composerEl = $(".composer");
-      if (!composerEl) return;
-      host = document.createElement("div");
-      host.id = "composerAttach";
-      host.className = "att-list";
-      composerEl.insertBefore(host, $(".composer-foot", composerEl));
-    }
-    host.innerHTML = "";
-    attachments.forEach(function (a, i) {
-      var d = document.createElement("div");
-      d.className = "att";
-      d.innerHTML = '<img alt="" src="' + a.dataUrl + '"><button aria-label="移除图片">×</button>';
-      $("button", d).addEventListener("click", function () {
-        attachments.splice(i, 1);
-        renderAttachments();
-      });
-      host.appendChild(d);
-    });
-  }
-  function openPicker() {
-    var input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.multiple = true;
-    input.addEventListener("change", function () {
-      Array.prototype.slice.call(input.files || []).slice(0, 4).forEach(function (file) {
-        if (attachments.length >= 4) { toast("最多 4 张图片"); return; }
-        var fr = new FileReader();
-        fr.onload = function () { attachments.push({ dataUrl: fr.result }); renderAttachments(); };
-        fr.readAsDataURL(file);
-      });
-    });
-    input.click();
-  }
-
-  /* ---------- publish ---------- */
-  function postMarkup(p) {
-    var media = (p.images && p.images.length)
-      ? '<div class="post-media">' + p.images.map(function (src) { return '<img alt="" src="' + src + '">'; }).join("") + "</div>"
-      : "";
-    return '<div class="post-head"><span class="av av-md" style="--h:38"><span>沈</span></span>' +
-      '<div class="post-id"><div class="post-name">沈砚舟<svg class="ico ico-14"><use href="#i-check"/></svg></div>' +
-      '<div class="post-meta">' + esc(p.meta || "刚刚发布") + "</div></div>" +
-      '<button class="icon-btn" aria-label="更多操作"><svg class="ico"><use href="#i-more"/></svg></button></div>' +
-      '<p class="post-body">' + esc(p.text) + "</p>" + media +
-      '<div class="post-actions">' +
-      '<button class="act like" data-n="0"><svg class="ico ico-14"><use href="#i-heart"/></svg><span>0</span></button>' +
-      '<button class="act" data-n="0"><svg class="ico ico-14"><use href="#i-comment"/></svg><span>0</span></button>' +
-      '<button class="act save" data-n="0"><svg class="ico ico-14"><use href="#i-bookmark"/></svg><span>0</span></button>' +
-      '<button class="act more" aria-label="分享"><svg class="ico ico-14"><use href="#i-share"/></svg></button></div>';
-  }
-  function insertPost(p, animate) {
-    if (!feed) feed = $("#feed");
-    if (!feed) return null;
-    var node = document.createElement("article");
-    node.className = "post";
-    node.setAttribute("data-kb", "");
-    node.setAttribute("data-tags", "following");
-    node.setAttribute("data-s", "沈砚舟 " + p.text);
-    if (p.id) node.id = p.id;
-    node.innerHTML = postMarkup(p);
-    if (animate) { node.style.opacity = "0"; node.style.transform = "translateY(-10px)"; }
-    feed.insertBefore(node, feed.firstChild);
-    if (animate) {
-      requestAnimationFrame(function () {
-        node.style.transition = "opacity .42s cubic-bezier(.2,0,0,1),transform .42s cubic-bezier(.2,0,0,1)";
-        node.style.opacity = "1";
-        node.style.transform = "none";
-      });
-    }
-    syncCommentCount(node);
-    return node;
-  }
-  function publish(e) {
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    if (!composer) return;
-    var text = (composer.value || "").trim();
-    if (!text && !attachments.length) { toast("请先输入内容或添加图片"); composer.focus(); return; }
-    var p = { id: "me-" + Date.now(), text: text || "分享图片",
-      images: attachments.map(function (a) { return a.dataUrl; }),
-      meta: "刚刚发布", time: new Date().toISOString() };
-    insertPost(p, true);
-    store.myPosts.push(p);
-    persist();
-    attachments = [];
-    renderAttachments();
-    composer.value = "";
-    composer.style.height = "auto";
-    if (countEl) { countEl.textContent = "0 / 500"; countEl.style.color = ""; }
-    toast("已发布到你的时间线");
-    var stream = $("#stream");
-    if (stream) stream.scrollTo({ top: 0, behavior: "smooth" });
-  }
-  document.addEventListener("click", function (e) {
-    if (!e.target.closest("#publishBtn")) return;
-    publish(e);
-  }, true);
-  document.addEventListener("keydown", function (e) {
-    if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && document.activeElement === composer) {
-      e.preventDefault();
-      e.stopPropagation();
-      publish(e);
-    }
-  }, true);
-
-  /* ---------- composer tools ---------- */
-  document.addEventListener("click", function (e) {
-    var tool = e.target.closest('.composer-tools [data-act="attach"]');
-    if (!tool) return;
-    e.preventDefault();
-    e.stopPropagation();
-    var use = tool.querySelector("use");
-    var icon = use ? use.getAttribute("href") : "";
-    if (icon === "#i-image") { openPicker(); return; }
-    if (icon === "#i-globe") {
-      openModal({
-        title: "插入链接",
-        body: '<div class="field"><label>链接地址</label><input type="text" placeholder="https://" value="https://"></div>',
-        buttons: [
-          { label: "取消" },
-          { label: "插入", kind: "btn-primary", onClick: function (w) {
-              var v = $("input", w).value.trim();
-              if (!v || v === "https://") { toast("请输入链接"); return false; }
-              if (composer) {
-                composer.value += (composer.value ? "\n" : "") + v;
-                composer.dispatchEvent(new Event("input", { bubbles: true }));
-              }
-              toast("链接已插入");
-          } }
-        ]
-      });
-      return;
-    }
-    if (composer) {
-      composer.value += (composer.value ? "\n" : "") + "［数据图表］";
-      composer.dispatchEvent(new Event("input", { bubbles: true }));
-    }
-    toast("已插入图表占位");
-  }, true);
-
-  /* ---------- share / menus ---------- */
-  function copyText(text, okMsg) {
-    function done() { toast(okMsg || "已复制到剪贴板"); }
+  function copy(text, okMsg) {
+    function done() { toast(okMsg || "已复制"); }
     function fallback() {
-      var ta = document.createElement("textarea");
+      var ta = el("textarea");
       ta.value = text;
       ta.style.position = "fixed";
       ta.style.opacity = "0";
       document.body.appendChild(ta);
       ta.select();
-      try { document.execCommand("copy"); done(); } catch (err) { toast("复制失败，请手动复制"); }
+      try { document.execCommand("copy"); done(); } catch (e) { toast("复制失败，请手动复制"); }
       ta.remove();
     }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(done, fallback);
-    } else fallback();
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+    else fallback();
   }
-  function postUrl(post) {
-    return location.href.split("#")[0] + "#" + (post.id || encodeURIComponent(postKey(post)));
-  }
-  function removePost(post) {
-    store.deleted.push(postKey(post));
-    persist();
-    post.style.transition = "opacity .25s var(--ease)";
-    post.style.opacity = "0";
-    setTimeout(function () { post.remove(); }, 260);
-    toast("动态已删除");
-  }
-  function hidePost(post) {
-    store.hidden.push(postKey(post));
-    persist();
-    post.style.transition = "opacity .25s var(--ease)";
-    post.style.opacity = "0";
-    setTimeout(function () { post.style.display = "none"; }, 260);
-    toast("已隐藏这条动态");
-  }
-  function postMenu(post, anchor) {
-    popover(anchor, [
-      { label: "复制链接", icon: "i-globe", onClick: function () { copyText(postUrl(post), "动态链接已复制"); } },
-      { label: "收藏这条", icon: "i-bookmark", onClick: function () {
-          var save = post.querySelector(".act.save");
-          if (save && !save.classList.contains("is-on")) save.click();
-      } },
-      { label: "隐藏这条", icon: "i-x", onClick: function () { hidePost(post); } },
-      { label: "删除动态", icon: "i-trash", danger: true, onClick: function () { removePost(post); } }
-    ]);
-  }
-  document.addEventListener("click", function (e) {
-    var more = e.target.closest("#feed .act.more");
-    if (more) { e.preventDefault(); e.stopPropagation(); postMenu(more.closest(".post"), more); return; }
-    var head = e.target.closest("#feed .post-head .icon-btn");
-    if (head) { e.preventDefault(); e.stopPropagation(); postMenu(head.closest(".post"), head); }
-  }, true);
 
-  /* ---------- settings / edit / share ---------- */
-  function swtRow(label, desc, on, onToggle) {
-    var row = document.createElement("div");
-    row.className = "swt";
+  /* switch row used by settings */
+  function switchRow(label, desc, on, onChange) {
+    var row = el("div", "swt");
     row.innerHTML = '<div><div class="swt-t">' + esc(label) + '</div><div class="swt-d">' + esc(desc) + "</div></div>" +
       '<button class="tgl" role="switch" aria-checked="' + (on ? "true" : "false") + '" aria-label="' + esc(label) + '"></button>';
     var tgl = $(".tgl", row);
     tgl.addEventListener("click", function () {
       var next = tgl.getAttribute("aria-checked") !== "true";
       tgl.setAttribute("aria-checked", next ? "true" : "false");
-      onToggle(next);
+      onChange(next);
     });
     return row;
   }
-  function openSettings() {
-    var s = store.settings;
-    var body = document.createElement("div");
-    body.innerHTML = '<div class="field"><label>正文字号</label><select>' +
-      '<option value="sm"' + (s.font === "sm" ? " selected" : "") + ">小 12.5px</option>" +
-      '<option value="md"' + (s.font === "md" ? " selected" : "") + ">标准 13.5px</option>" +
-      '<option value="lg"' + (s.font === "lg" ? " selected" : "") + ">大 14.5px</option></select></div>";
-    body.appendChild(swtRow("紧凑排版", "减少卡片内边距，同屏显示更多动态", s.density === "compact", function (on) {
-      s.density = on ? "compact" : "normal";
-      applySettings();
-      persist();
-    }));
-    body.appendChild(swtRow("减少动效", "关闭入场动画与过渡，适合长时间阅读", s.motion === "off", function (on) {
-      s.motion = on ? "off" : "on";
-      applySettings();
-      persist();
-    }));
-    body.appendChild(swtRow("显示右侧栏", "公告、在线好友与账号概览", s.right !== "off", function (on) {
-      s.right = on ? "on" : "off";
-      applySettings();
-      persist();
-    }));
-    $("select", body).addEventListener("change", function (e) {
-      s.font = e.target.value;
-      applySettings();
-      persist();
-    });
-    var reset = document.createElement("button");
-    reset.className = "btn btn-ghost";
-    reset.textContent = "清空本地数据并重置";
-    reset.addEventListener("click", function () {
-      try { localStorage.removeItem(KEY); } catch (err) {}
-      location.reload();
-    });
-    body.appendChild(reset);
-    openModal({ title: "设置", body: body, buttons: [{ label: "完成", kind: "btn-primary" }] });
+
+  /* image shrink: keeps localStorage from exploding */
+  function readImage(file, cb) {
+    var fr = new FileReader();
+    fr.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var max = 1000;
+        var w = img.width, h = img.height;
+        if (w > max || h > max) {
+          var k = Math.min(max / w, max / h);
+          w = Math.round(w * k);
+          h = Math.round(h * k);
+        }
+        var cv = el("canvas");
+        cv.width = w; cv.height = h;
+        cv.getContext("2d").drawImage(img, 0, 0, w, h);
+        var out = cv.toDataURL("image/jpeg", 0.82);
+        cb(out.length > fr.result.length ? fr.result : out);
+      };
+      img.onerror = function () { cb(fr.result); };
+      img.src = fr.result;
+    };
+    fr.onerror = function () { toast("图片读取失败"); };
+    fr.readAsDataURL(file);
   }
 
+  window.ElanUI = {
+    $: $, $$: $$, esc: esc, el: el, toast: toast,
+    hhmm: hhmm, timeAgo: timeAgo, dayKey: dayKey, stamp: stamp,
+    initial: initial, hue: hue, avatar: avatar,
+    openModal: openModal, popover: popover, closePop: closePop,
+    copy: copy, switchRow: switchRow, readImage: readImage
+  };
+})();
+
+/* ===== Élan data layer: accounts, posts, direct messages ===== */
+(function () {
+  "use strict";
+
+  var KEY = "elan.v3";
+  var LEGACY = ["elan.state.v1"];
+
+  /* fnv-ish, salted. Obfuscation only — this is a local client store, not a server. */
+  function hash(text, salt) {
+    var s = String(salt || "") + "|" + String(text || ""), h1 = 0x811c9dc5, h2 = 0x9e3779b1;
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charCodeAt(i);
+      h1 ^= c; h1 = (h1 * 16777619) >>> 0;
+      h2 = (((h2 << 5) + h2) ^ c) >>> 0;
+    }
+    return ("0000000" + h1.toString(16)).slice(-8) + ("0000000" + h2.toString(16)).slice(-8);
+  }
+  function rid(prefix) {
+    return (prefix || "id") + "_" + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
+  }
+  function blank() {
+    return {
+      v: 3, users: [], session: null,
+      posts: [], likes: {}, saves: {}, comments: {}, hidden: {},
+      msgs: [], notices: [], prefs: {}, meta: { createdAt: Date.now() }
+    };
+  }
+
+  var db;
+  try {
+    var raw = JSON.parse(localStorage.getItem(KEY) || "null");
+    db = Object.assign(blank(), raw && typeof raw === "object" ? raw : {});
+  } catch (e) { db = blank(); }
+  LEGACY.forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
+
+  var onQuota = null;
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(db)); return true; }
+    catch (e) {
+      if (onQuota) onQuota(e);
+      return false;
+    }
+  }
+
+  /* ---------- users ---------- */
+  function userById(id) {
+    for (var i = 0; i < db.users.length; i++) if (db.users[i].id === id) return db.users[i];
+    return null;
+  }
+  function me() { return db.session ? userById(db.session) : null; }
+  function isAdmin() { var u = me(); return !!(u && u.role === "admin"); }
+  function byHandle(h) {
+    var key = String(h || "").trim().toLowerCase();
+    for (var i = 0; i < db.users.length; i++) if (db.users[i].handle.toLowerCase() === key) return db.users[i];
+    return null;
+  }
+  function normHandle(h) { return String(h || "").trim().replace(/^@+/, "").toLowerCase(); }
+  function validHandle(h) { return /^[a-z0-9][a-z0-9_.-]{1,19}$/.test(h); }
+
+  function createUser(o) {
+    var name = String(o.name || "").trim();
+    var handle = normHandle(o.handle);
+    var pass = String(o.pass || "");
+    if (!name) return { err: "昵称不能为空" };
+    if (name.length > 20) return { err: "昵称最多 20 个字" };
+    if (!validHandle(handle)) return { err: "账号需 2–20 位，字母数字开头，可用 _ . -" };
+    if (byHandle(handle)) return { err: "账号 @" + handle + " 已被占用" };
+    if (pass.length < 6) return { err: "密码至少 6 位" };
+    var salt = Math.random().toString(36).slice(2, 10);
+    var u = {
+      id: rid("u"), name: name, handle: handle, salt: salt, pass: hash(pass, salt),
+      role: o.role === "admin" ? "admin" : "user",
+      bio: String(o.bio || "").slice(0, 140),
+      title: String(o.title || "").slice(0, 24),
+      joined: Date.now()
+    };
+    db.users.push(u);
+    save();
+    return { user: u };
+  }
+  function updateUser(id, patch) {
+    var u = userById(id);
+    if (!u) return { err: "账号不存在" };
+    if (patch.name != null) {
+      var n = String(patch.name).trim();
+      if (!n) return { err: "昵称不能为空" };
+      if (n.length > 20) return { err: "昵称最多 20 个字" };
+      u.name = n;
+    }
+    if (patch.handle != null) {
+      var h = normHandle(patch.handle);
+      if (!validHandle(h)) return { err: "账号需 2–20 位，字母数字开头" };
+      var other = byHandle(h);
+      if (other && other.id !== id) return { err: "账号 @" + h + " 已被占用" };
+      u.handle = h;
+    }
+    if (patch.bio != null) u.bio = String(patch.bio).slice(0, 140);
+    if (patch.title != null) u.title = String(patch.title).slice(0, 24);
+    if (patch.role != null) {
+      var role = patch.role === "admin" ? "admin" : "user";
+      if (u.role === "admin" && role !== "admin" && adminCount() <= 1) return { err: "至少要保留一个管理员" };
+      u.role = role;
+    }
+    if (patch.pass) {
+      if (String(patch.pass).length < 6) return { err: "密码至少 6 位" };
+      u.salt = Math.random().toString(36).slice(2, 10);
+      u.pass = hash(patch.pass, u.salt);
+    }
+    save();
+    return { user: u };
+  }
+  function adminCount() {
+    return db.users.filter(function (u) { return u.role === "admin"; }).length;
+  }
+  function deleteUser(id) {
+    var u = userById(id);
+    if (!u) return { err: "账号不存在" };
+    var self = me();
+    if (self && self.id === id) return { err: "不能删除当前登录的账号" };
+    if (u.role === "admin" && adminCount() <= 1) return { err: "至少要保留一个管理员" };
+    db.users = db.users.filter(function (x) { return x.id !== id; });
+    db.posts = db.posts.filter(function (p) { return p.author !== id; });
+    db.msgs = db.msgs.filter(function (m) { return m.from !== id && m.to !== id; });
+    Object.keys(db.comments).forEach(function (k) {
+      db.comments[k] = (db.comments[k] || []).filter(function (c) { return c.author !== id; });
+    });
+    Object.keys(db.likes).forEach(function (k) { delete db.likes[k][id]; });
+    delete db.saves[id]; delete db.hidden[id]; delete db.prefs[id];
+    if (db.session === id) db.session = null;
+    save();
+    return { ok: true };
+  }
+
+  function login(handle, pass) {
+    var u = byHandle(handle);
+    if (!u) return { err: "账号不存在" };
+    if (u.pass !== hash(pass, u.salt)) return { err: "密码不正确" };
+    db.session = u.id;
+    u.lastLogin = Date.now();
+    save();
+    return { user: u };
+  }
+  function logout() { db.session = null; save(); }
+
+  /* mutate in place: window.ElanData.db keeps a live reference */
+  function resetAll() {
+    var fresh = blank();
+    Object.keys(db).forEach(function (k) { delete db[k]; });
+    Object.assign(db, fresh);
+    save();
+  }
+
+  /* ---------- posts ---------- */
+  function addPost(o) {
+    var u = me();
+    if (!u) return { err: "请先登录" };
+    var text = String(o.text || "").trim();
+    var images = (o.images || []).slice(0, 4);
+    if (!text && !images.length) return { err: "请先输入内容或添加图片" };
+    var p = { id: rid("p"), author: u.id, text: text, images: images, time: Date.now() };
+    db.posts.push(p);
+    save();
+    return { post: p };
+  }
+  function removePost(id) {
+    var u = me();
+    var p = db.posts.filter(function (x) { return x.id === id; })[0];
+    if (!p) return { err: "动态不存在" };
+    if (!u || (p.author !== u.id && u.role !== "admin")) return { err: "只能删除自己的动态" };
+    db.posts = db.posts.filter(function (x) { return x.id !== id; });
+    delete db.likes[id]; delete db.comments[id];
+    Object.keys(db.saves).forEach(function (k) { delete db.saves[k][id]; });
+    Object.keys(db.hidden).forEach(function (k) { delete db.hidden[k][id]; });
+    save();
+    return { ok: true };
+  }
+  function feedPosts() {
+    var u = me();
+    var hidden = (u && db.hidden[u.id]) || {};
+    return db.posts.slice()
+      .filter(function (p) { return !hidden[p.id]; })
+      .sort(function (a, b) { return b.time - a.time; });
+  }
+  function likeCount(id) { return Object.keys(db.likes[id] || {}).length; }
+  function liked(id) { var u = me(); return !!(u && db.likes[id] && db.likes[id][u.id]); }
+  function toggleLike(id) {
+    var u = me();
+    if (!u) return false;
+    db.likes[id] = db.likes[id] || {};
+    if (db.likes[id][u.id]) delete db.likes[id][u.id]; else db.likes[id][u.id] = true;
+    save();
+    return !!db.likes[id][u.id];
+  }
+  function saved(id) { var u = me(); return !!(u && db.saves[u.id] && db.saves[u.id][id]); }
+  function toggleSave(id) {
+    var u = me();
+    if (!u) return false;
+    db.saves[u.id] = db.saves[u.id] || {};
+    if (db.saves[u.id][id]) delete db.saves[u.id][id]; else db.saves[u.id][id] = true;
+    save();
+    return !!db.saves[u.id][id];
+  }
+  function hidePost(id) {
+    var u = me();
+    if (!u) return;
+    db.hidden[u.id] = db.hidden[u.id] || {};
+    db.hidden[u.id][id] = true;
+    save();
+  }
+  function commentsOf(id) { return db.comments[id] || []; }
+  function addComment(postId, text) {
+    var u = me();
+    if (!u || !String(text || "").trim()) return { err: "评论不能为空" };
+    db.comments[postId] = db.comments[postId] || [];
+    var c = { id: rid("c"), author: u.id, text: String(text).trim().slice(0, 240), time: Date.now() };
+    db.comments[postId].push(c);
+    save();
+    return { comment: c };
+  }
+  function likedBy(postId, userId) { return !!(db.likes[postId] && db.likes[postId][userId]); }
+
+  /* ---------- direct messages ---------- */
+  function sendMsg(to, text) {
+    var u = me();
+    if (!u) return { err: "请先登录" };
+    if (to === u.id) return { err: "不能给自己发私信" };
+    var body = String(text || "").trim();
+    if (!body) return { err: "消息不能为空" };
+    var m = { id: rid("m"), from: u.id, to: to, text: body.slice(0, 1000), time: Date.now(), read: false };
+    db.msgs.push(m);
+    save();
+    return { msg: m };
+  }
+  function thread(a, b) {
+    return db.msgs.filter(function (m) {
+      return (m.from === a && m.to === b) || (m.from === b && m.to === a);
+    }).sort(function (x, y) { return x.time - y.time; });
+  }
+  function markRead(peer) {
+    var u = me();
+    if (!u) return 0;
+    var n = 0;
+    db.msgs.forEach(function (m) {
+      if (m.from === peer && m.to === u.id && !m.read) { m.read = true; n++; }
+    });
+    if (n) save();
+    return n;
+  }
+  function unreadFrom(peer) {
+    var u = me();
+    if (!u) return 0;
+    return db.msgs.filter(function (m) { return m.from === peer && m.to === u.id && !m.read; }).length;
+  }
+  function unreadTotal() {
+    var u = me();
+    if (!u) return 0;
+    return db.msgs.filter(function (m) { return m.to === u.id && !m.read; }).length;
+  }
+  /* conversations: one row per peer, newest first */
+  function conversations() {
+    var u = me();
+    if (!u) return [];
+    var map = {};
+    db.msgs.forEach(function (m) {
+      if (m.from !== u.id && m.to !== u.id) return;
+      var peer = m.from === u.id ? m.to : m.from;
+      if (!userById(peer)) return;
+      var row = map[peer] || (map[peer] = { peerId: peer, last: m, unread: 0 });
+      if (m.time > row.last.time) row.last = m;
+      if (m.to === u.id && !m.read) row.unread++;
+    });
+    return Object.keys(map).map(function (k) { return map[k]; })
+      .sort(function (a, b) { return b.last.time - a.last.time; });
+  }
+  function peers() {
+    var u = me();
+    return db.users.filter(function (x) { return !u || x.id !== u.id; });
+  }
+
+  /* ---------- notices ---------- */
+  function addNotice(title, body) {
+    if (!isAdmin()) return { err: "只有管理员可以发布公告" };
+    var t = String(title || "").trim();
+    if (!t) return { err: "标题不能为空" };
+    db.notices.unshift({ id: rid("n"), title: t.slice(0, 80), body: String(body || "").slice(0, 600), time: Date.now(), by: db.session });
+    save();
+    return { ok: true };
+  }
+  function removeNotice(id) {
+    if (!isAdmin()) return { err: "只有管理员可以删除公告" };
+    db.notices = db.notices.filter(function (n) { return n.id !== id; });
+    save();
+    return { ok: true };
+  }
+
+  /* ---------- prefs ---------- */
+  var DEFAULT_PREFS = { motion: "on", density: "normal", font: "md", right: "on" };
+  function prefs() {
+    var u = me();
+    var p = (u && db.prefs[u.id]) || {};
+    return Object.assign({}, DEFAULT_PREFS, p);
+  }
+  function setPref(k, v) {
+    var u = me();
+    if (!u) return;
+    db.prefs[u.id] = Object.assign({}, DEFAULT_PREFS, db.prefs[u.id] || {}, { [k]: v });
+    save();
+  }
+
+  /* ---------- stats ---------- */
+  function stats(userId) {
+    var posts = db.posts.filter(function (p) { return p.author === userId; });
+    var likes = posts.reduce(function (n, p) { return n + likeCount(p.id); }, 0);
+    var cmts = db.posts.reduce(function (n, p) {
+      return n + (db.comments[p.id] || []).filter(function (c) { return c.author !== userId; }).length * (p.author === userId ? 1 : 0);
+    }, 0);
+    var given = 0;
+    Object.keys(db.likes).forEach(function (pid) { if (db.likes[pid][userId]) given++; });
+    return { posts: posts.length, likes: likes, comments: cmts, liked: given,
+      friends: peers().length };
+  }
+
+  window.ElanData = {
+    db: db, save: save, hash: hash, rid: rid, blank: blank,
+    onQuota: function (fn) { onQuota = fn; },
+    me: me, isAdmin: isAdmin, userById: userById, byHandle: byHandle, normalizeHandle: normHandle,
+    createUser: createUser, updateUser: updateUser, deleteUser: deleteUser, adminCount: adminCount,
+    login: login, logout: logout, resetAll: resetAll,
+    addPost: addPost, removePost: removePost, feedPosts: feedPosts,
+    likeCount: likeCount, liked: liked, toggleLike: toggleLike,
+    saved: saved, toggleSave: toggleSave, hidePost: hidePost, likedBy: likedBy,
+    commentsOf: commentsOf, addComment: addComment,
+    sendMsg: sendMsg, thread: thread, markRead: markRead, unreadFrom: unreadFrom,
+    unreadTotal: unreadTotal, conversations: conversations, peers: peers,
+    addNotice: addNotice, removeNotice: removeNotice,
+    prefs: prefs, setPref: setPref, stats: stats,
+    /* live re-read of the module-level db (blank() replaces the object on reset) */
+    refresh: function () { return window.ElanData.db; }
+  };
+})();
+
+/* ===== Élan app: accounts, timeline, direct messages ===== */
+(function () {
+  "use strict";
+
+  var U = window.ElanUI, D = window.ElanData;
+  var $ = U.$, $$ = U.$$, esc = U.esc, el = U.el, toast = U.toast;
+  var state = { peer: null, selected: null };
+  function db() { return D.db; }
+
+  /* ============ 1. wipe the demo content ============ */
+  function stripDemo() {
+    var feed = $("#feed");
+    if (feed) feed.innerHTML = "";
+
+    var msgList = $("#msgList");
+    if (msgList) msgList.innerHTML = "";
+    var seg = $("#msgSeg");
+    if (seg) seg.style.display = "none";
+
+    /* demo friends (view + right rail) → mark the containers for member lists */
+    var hosts = [];
+    $$(".friend").forEach(function (f) {
+      var p = f.parentElement;
+      if (p && hosts.indexOf(p) === -1) hosts.push(p);
+      f.remove();
+    });
+    hosts.forEach(function (p) { p.setAttribute("data-members", "1"); p.innerHTML = ""; });
+
+    /* demo notices */
+    var noticeHosts = [];
+    $$(".notice").forEach(function (n) {
+      var p = n.parentElement;
+      if (p && noticeHosts.indexOf(p) === -1) noticeHosts.push(p);
+      n.remove();
+    });
+    noticeHosts.forEach(function (p) { p.setAttribute("data-notices", "1"); p.innerHTML = ""; });
+    var mini = $(".notice-mini");
+    if (mini && mini.parentElement) {
+      mini.parentElement.setAttribute("data-notice-mini", "1");
+      mini.parentElement.innerHTML = "";
+    }
+
+    /* right rail demo friends */
+    var railHosts = [];
+    $$(".f-row").forEach(function (r) {
+      var p = r.parentElement;
+      if (p && railHosts.indexOf(p) === -1) railHosts.push(p);
+      r.remove();
+    });
+    railHosts.forEach(function (p) { p.setAttribute("data-rail-members", "1"); });
+    var foot = $(".rail-foot");
+    if (foot) foot.innerHTML = "Élan · 本机账号系统<br>账号、动态与私信保存在这台设备的浏览器里";
+
+    /* demo profile projects / saved / about */
+    ["works", "saved"].forEach(function (k) {
+      var panel = $('[data-ppanel="' + k + '"]');
+      if (!panel) return;
+      var grid = $(".work-grid", panel);
+      if (grid) grid.innerHTML = "";
+    });
+  }
+
+  /* ============ 2. identity ============ */
+  function applyPrefs() {
+    var p = D.prefs();
+    var r = document.documentElement;
+    r.dataset.motion = p.motion === "off" ? "off" : "on";
+    r.dataset.density = p.density === "compact" ? "compact" : "normal";
+    r.dataset.font = p.font || "md";
+    r.dataset.hideRight = p.right === "off" ? "on" : "off";
+  }
+
+  function applyIdentity() {
+    var u = D.me();
+    if (!u) return;
+    var chip = $(".me-chip");
+    if (chip) {
+      var span = chip.querySelector("span:last-child");
+      if (span) span.textContent = u.name;
+      var av = chip.querySelector(".av span");
+      if (av) av.textContent = U.initial(u.name);
+      if (chip.querySelector(".av")) chip.querySelector(".av").style.setProperty("--h", U.hue(u.handle));
+    }
+    var cAv = $(".composer .av");
+    if (cAv) {
+      cAv.style.setProperty("--h", U.hue(u.handle));
+      var cSpan = cAv.querySelector("span");
+      if (cSpan) cSpan.textContent = U.initial(u.name);
+    }
+    var ta = $("#composerText");
+    if (ta) ta.placeholder = u.name + "，分享点什么…";
+    var meName = $(".me-name");
+    if (meName) meName.textContent = u.name;
+    var meSub = $(".me-sub");
+    if (meSub) meSub.textContent = "@" + u.handle + (u.title ? " · " + u.title : " · " + (u.role === "admin" ? "管理员" : "成员"));
+    var meCardAv = $(".me-card .av");
+    if (meCardAv) {
+      meCardAv.style.setProperty("--h", U.hue(u.handle));
+      var s2 = meCardAv.querySelector("span");
+      if (s2) s2.textContent = U.initial(u.name);
+    }
+    var adminBtn = $("[data-admin-entry]");
+    if (adminBtn) adminBtn.style.display = D.isAdmin() ? "" : "none";
+    applyPrefs();
+  }
+
+  /* ============ 3. feed ============ */
+  function linkify(text) {
+    return esc(text).replace(/(https?:\/\/[^\s<]+)/g, function (m) {
+      return '<a href="' + m + '" target="_blank" rel="noopener">' + m + "</a>";
+    }).replace(/\n/g, "<br>");
+  }
+  function postNode(p) {
+    var a = D.userById(p.author) || { name: "已注销账号", handle: "deleted", id: p.author };
+    var mine = D.me() && D.me().id === p.author;
+    var liked = D.liked(p.id), saved = D.saved(p.id);
+    var nLike = D.likeCount(p.id), nCmt = D.commentsOf(p.id).length;
+    var node = el("article", "post");
+    node.setAttribute("data-kb", "");
+    node.setAttribute("data-id", p.id);
+    node.setAttribute("data-tags", "all" + (mine ? " mine" : "") + (nLike >= 2 ? " hot" : ""));
+    node.id = p.id;
+    node.innerHTML =
+      '<div class="post-head">' + U.avatar(a, "md") +
+        '<div class="post-id"><div class="post-name">' + esc(a.name) +
+          (a.role === "admin" ? '<svg class="ico ico-14" style="color:var(--amber)"><use href="#i-check"/></svg>' : "") +
+        '</div><div class="post-meta">@' + esc(a.handle) + "<i></i>" + U.timeAgo(p.time) + "</div></div>" +
+        '<button class="icon-btn" aria-label="更多操作"><svg class="ico"><use href="#i-more"/></svg></button></div>' +
+      '<p class="post-body">' + linkify(p.text) + "</p>" +
+      (p.images && p.images.length
+        ? '<div class="post-media">' + p.images.map(function (src) {
+            return '<img alt="" src="' + src + '">';
+          }).join("") + "</div>"
+        : "") +
+      '<div class="post-actions">' +
+        '<button class="act like' + (liked ? " is-on" : "") + '" data-n="' + nLike + '"><svg class="ico ico-14"><use href="#i-heart"/></svg><span>' + nLike + "</span></button>" +
+        '<button class="act cmt-toggle" data-n="' + nCmt + '"><svg class="ico ico-14"><use href="#i-comment"/></svg><span>' + nCmt + "</span></button>" +
+        '<button class="act save' + (saved ? " is-on" : "") + '"><svg class="ico ico-14"><use href="#i-bookmark"/></svg><span>收藏</span></button>' +
+        '<button class="act more" aria-label="分享"><svg class="ico ico-14"><use href="#i-share"/></svg></button>' +
+      "</div>";
+    return node;
+  }
+
+  function renderFeed() {
+    var host = $("#feed");
+    if (!host) return;
+    host.innerHTML = "";
+    var list = D.feedPosts();
+    if (!list.length) {
+      host.innerHTML = '<div class="empty-state"><div class="empty-t">时间线还是空的</div>' +
+        "<p>在这个账号下发出第一条动态，其他账号登录后同样能看到。</p></div>";
+      return;
+    }
+    var frag = document.createDocumentFragment();
+    list.forEach(function (p) { frag.appendChild(postNode(p)); });
+    host.appendChild(frag);
+    syncChips();
+  }
+
+  function syncChips() {
+    var chips = $("#feedChips");
+    if (!chips || chips.dataset.built === "1") return;
+    chips.dataset.built = "1";
+    chips.innerHTML = '<button class="chip is-active" data-filter="all">全部</button>' +
+      '<button class="chip" data-filter="mine">我的</button>' +
+      '<button class="chip" data-filter="hot">热门</button>';
+  }
+
+  function commentsBlock(postId) {
+    var row = el("div", "cmt-wrap is-on");
+    row.innerHTML = '<div class="cmt-list"></div><div class="cmt-form">' +
+      '<input type="text" placeholder="写一条评论，回车发送…" aria-label="评论">' +
+      '<button class="btn btn-primary" data-send>发送</button></div>';
+    row.querySelector("[data-send]").addEventListener("click", function () { sendComment(postId, row); });
+    row.querySelector("input").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); sendComment(postId, row); }
+    });
+    renderComments(postId, row);
+    return row;
+  }
+  function renderComments(postId, wrap) {
+    var list = wrap.querySelector(".cmt-list");
+    var items = D.commentsOf(postId);
+    list.innerHTML = items.length
+      ? items.map(function (c) {
+          var a = D.userById(c.author) || { name: "已注销", handle: "x" };
+          return '<div class="cmt">' + U.avatar(a, "sm") + '<div class="cmt-b">' +
+            '<span class="cmt-n">' + esc(a.name) + "</span>" + esc(c.text) +
+            '<span class="cmt-t">' + U.timeAgo(c.time) + "</span></div></div>";
+        }).join("")
+      : '<div class="empty-inline">还没有评论，来说第一句。</div>';
+  }
+  function sendComment(postId, wrap) {
+    var input = wrap.querySelector("input");
+    var r = D.addComment(postId, input.value);
+    if (r.err) { toast(r.err); input.focus(); return; }
+    input.value = "";
+    renderComments(postId, wrap);
+    bumpCount(postId);
+    toast("评论已发布");
+  }
+  function bumpCount(postId) {
+    var node = document.getElementById(postId);
+    if (!node) return;
+    var btn = node.querySelector(".cmt-toggle");
+    if (btn) {
+      var n = D.commentsOf(postId).length;
+      btn.dataset.n = String(n);
+      btn.querySelector("span").textContent = String(n);
+    }
+  }
+
+  /* ============ 4. composer ============ */
+  var attachments = [];
+  function attachHost() {
+    var host = $("#composerAttach");
+    if (host) return host;
+    var box = $(".composer");
+    if (!box) return null;
+    host = el("div", "att-list");
+    host.id = "composerAttach";
+    box.insertBefore(host, $(".composer-foot", box));
+    return host;
+  }
+  function renderAttachments() {
+    var host = attachHost();
+    if (!host) return;
+    host.innerHTML = "";
+    attachments.forEach(function (a, i) {
+      var d = el("div", "att", '<img alt="" src="' + a + '"><button aria-label="移除图片">×</button>');
+      d.querySelector("button").addEventListener("click", function () {
+        attachments.splice(i, 1);
+        renderAttachments();
+      });
+      host.appendChild(d);
+    });
+  }
+  function pickImages() {
+    var input = el("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.multiple = true;
+    input.addEventListener("change", function () {
+      Array.prototype.slice.call(input.files || []).forEach(function (f) {
+        if (attachments.length >= 4) { toast("最多 4 张图片"); return; }
+        U.readImage(f, function (url) {
+          attachments.push(url);
+          renderAttachments();
+        });
+      });
+    });
+    input.click();
+  }
+  function publish() {
+    var ta = $("#composerText");
+    var r = D.addPost({ text: ta ? ta.value : "", images: attachments });
+    if (r.err) { toast(r.err); if (ta) ta.focus(); return; }
+    attachments = [];
+    renderAttachments();
+    if (ta) { ta.value = ""; ta.style.height = "auto"; }
+    var c = $("#composerCount");
+    if (c) c.textContent = "0 / 500";
+    renderFeed();
+    renderProfile();
+    syncNav();
+    toast("已发布");
+    var stream = $("#stream");
+    if (stream) stream.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* ============ 5. direct messages ============ */
+  function imHost() {
+    var view = $('[data-view="latest"]');
+    if (!view) return null;
+    var box = $("#elanIm");
+    if (box) return box;
+    box = el("div", "im");
+    box.id = "elanIm";
+    box.innerHTML =
+      '<div class="im-list"><div class="im-search"><input type="search" placeholder="搜索账号…" aria-label="搜索账号"></div>' +
+      '<div class="im-rows"></div></div>' +
+      '<div class="im-thread"></div>';
+    var list = $("#msgList");
+    if (list) list.replaceWith(box); else view.appendChild(box);
+    box.querySelector(".im-search input").addEventListener("input", renderIMRows);
+    return box;
+  }
+  function renderIM() {
+    var box = imHost();
+    if (!box) return;
+    renderIMRows();
+    renderThread();
+  }
+  function renderIMRows() {
+    var box = imHost();
+    if (!box) return;
+    var q = ((box.querySelector(".im-search input") || {}).value || "").trim().toLowerCase();
+    var rows = box.querySelector(".im-rows");
+    var md = D.me();
+    if (!md) return;
+    var convs = D.conversations().filter(function (c) {
+      var peer = D.userById(c.peerId);
+      if (!peer) return false;
+      return !q || (peer.name + " " + peer.handle).toLowerCase().indexOf(q) !== -1;
+    });
+    var people = D.peers().filter(function (u) {
+      return !q || (u.name + " " + u.handle).toLowerCase().indexOf(q) !== -1;
+    });
+    var has = {};
+    convs.forEach(function (c) { has[c.peerId] = true; });
+    var html = "";
+    convs.forEach(function (c) {
+      var peer = D.userById(c.peerId);
+      html += '<button class="im-row' + (state.peer === c.peerId ? " is-on" : "") + '" data-peer="' + c.peerId + '">' +
+        U.avatar(peer, "md") +
+        '<div class="im-main"><div class="im-t"><span>' + esc(peer.name) + "</span><time>" + U.timeAgo(c.last.time) + "</time></div>" +
+        '<div class="im-d">' + (c.last.from === md.id ? "我：" : "") + esc(c.last.text) + "</div></div>" +
+        (c.unread ? '<span class="im-dot">' + c.unread + "</span>" : "") +
+        "</button>";
+    });
+    var rest = people.filter(function (u) { return !has[u.id]; });
+    if (rest.length) {
+      html += '<div class="im-sep">发起新对话</div>';
+      rest.forEach(function (u) {
+        html += '<button class="im-row" data-peer="' + u.id + '">' + U.avatar(u, "md") +
+          '<div class="im-main"><div class="im-t"><span>' + esc(u.name) + "</span><time>@" + esc(u.handle) + "</time></div>" +
+          '<div class="im-d">' + esc(u.bio || (u.role === "admin" ? "管理员" : "还没有聊过")) + "</div></div></button>";
+      });
+    }
+    rows.innerHTML = html || '<div class="empty-inline" style="padding:14px">没有匹配的账号</div>';
+  }
+  function renderThread() {
+    var box = imHost();
+    if (!box) return;
+    var host = box.querySelector(".im-thread");
+    var md = D.me();
+    var peer = state.peer ? D.userById(state.peer) : null;
+    if (!md || !peer) {
+      host.innerHTML = '<div class="im-empty"><div class="im-empty-t">选择一个会话</div>' +
+        "<p>私信只属于对话双方：换个账号登录，就看不到这里的消息。</p></div>";
+      box.classList.remove("is-thread");
+      return;
+    }
+    var msgs = D.thread(md.id, peer.id);
+    var log = msgs.length
+      ? msgs.map(function (m, i) {
+          var prev = msgs[i - 1];
+          var sep = !prev || m.time - prev.time > 6e5
+            ? '<div class="im-day">' + U.dayKey(m.time) + " " + U.hhmm(m.time) + "</div>" : "";
+          return sep + '<div class="im-line ' + (m.from === md.id ? "me" : "them") + '">' +
+            '<div class="im-bub">' + esc(m.text) + "</div></div>";
+        }).join("")
+      : '<div class="empty-inline" style="padding:18px">和 ' + esc(peer.name) + " 还没有聊过，说第一句。</div>";
+    host.innerHTML =
+      '<div class="im-head">' + U.avatar(peer, "md") +
+        '<div class="im-main"><div class="im-t"><span>' + esc(peer.name) + "</span></div>" +
+        '<div class="im-d">@' + esc(peer.handle) + "</div></div>" +
+        '<button class="icon-btn im-back" data-im-close aria-label="返回会话"><svg class="ico"><use href="#i-x"/></svg></button></div>' +
+      '<div class="im-log">' + log + "</div>" +
+      '<div class="im-foot"><input type="text" placeholder="输入消息，回车发送…" aria-label="消息内容">' +
+      '<button class="btn btn-primary" data-im-send>发送</button></div>';
+    var lg = host.querySelector(".im-log");
+    lg.scrollTop = lg.scrollHeight;
+    host.querySelector("[data-im-send]").addEventListener("click", function () { sendIM(host); });
+    host.querySelector(".im-foot input").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); sendIM(host); }
+    });
+    setTimeout(function () {
+      var i = host.querySelector(".im-foot input");
+      if (i && window.innerWidth > 900) i.focus();
+    }, 40);
+  }
+  function sendIM(host) {
+    var input = host.querySelector(".im-foot input");
+    var r = D.sendMsg(state.peer, input.value);
+    if (r.err) { toast(r.err); return; }
+    input.value = "";
+    renderThread();
+    renderIMRows();
+    syncNav();
+  }
+  function openThread(peerId) {
+    state.peer = peerId;
+    D.markRead(peerId);
+    var box = imHost();
+    if (box) box.classList.add("is-thread");
+    renderIMRows();
+    renderThread();
+    syncNav();
+  }
+
+  /* ============ 6. members + rail ============ */
+  function memberCard(u) {
+    return '<div class="mem" data-member="' + u.id + '">' + U.avatar(u, "lg") +
+      '<div class="mem-main"><div class="mem-n">' + esc(u.name) +
+        (u.role === "admin" ? '<span class="mem-role">管理员</span>' : "") + "</div>" +
+      '<div class="mem-h">@' + esc(u.handle) + "</div>" +
+      '<div class="mem-b">' + esc(u.bio || "还没有写简介") + "</div></div>" +
+      '<div class="mem-acts"><button class="btn btn-ghost" data-mem-dm="' + u.id + '">发私信</button>' +
+      (D.isAdmin() ? '<button class="btn btn-ghost" data-mem-edit="' + u.id + '">编辑</button>' : "") +
+      "</div></div>";
+  }
+  function renderMembers() {
+    var md = D.me();
+    var list = D.peers();
+    var html = list.length
+      ? list.map(memberCard).join("")
+      : '<div class="empty-state"><div class="empty-t">还没有其他账号</div><p>管理员可以在「账号管理」里创建成员。</p></div>';
+    $$("[data-members]").forEach(function (h) { h.innerHTML = html; });
+  }
+
+  function renderRailMembers() {
+    var hosts = $$("[data-rail-members]");
+    var list = D.peers().slice(0, 6);
+    hosts.forEach(function (h) {
+      h.innerHTML = list.length
+        ? list.map(function (u) {
+            return '<div class="f-row">' + U.avatar(u, "sm") +
+              '<div style="min-width:0"><div class="f-name">' + esc(u.name) + "</div>" +
+              '<div class="f-sub">@' + esc(u.handle) + "</div></div>" +
+              '<button class="f-btn" data-mem-dm="' + u.id + '">私信</button></div>';
+          }).join("")
+        : '<div class="empty-inline">暂无其他成员</div>';
+    });
+  }
+
+  /* ============ 7. notices ============ */
+  function renderNotices() {
+    var html = db().notices.length
+      ? db().notices.map(function (n) {
+          var by = D.userById(n.by) || { name: "管理员" };
+          return '<div class="notice is-open" data-notice="' + n.id + '">' +
+            '<button class="notice-head" aria-expanded="true">' +
+            '<span class="notice-ico"><svg class="ico"><use href="#i-megaphone"/></svg></span>' +
+            '<div class="notice-main"><div class="notice-t">' + esc(n.title) + "</div>" +
+            '<div class="notice-d">' + U.stamp(n.time) + " · " + esc(by.name) + "</div></div></button>" +
+            '<div class="notice-body">' + esc(n.body || "") + "</div></div>";
+        }).join("")
+      : '<div class="empty-state"><div class="empty-t">还没有公告</div><p>管理员可在「账号管理」里发布公告。</p></div>';
+    $$("[data-notices]").forEach(function (h) { h.innerHTML = html; });
+    var mini = $("[data-notice-mini]");
+    if (mini) {
+      mini.innerHTML = db().notices.slice(0, 3).map(function (n) {
+        return '<button class="notice-mini" data-nav="notice">' + esc(n.title) + "</button>";
+      }).join("") || '<div class="empty-inline">暂无公告</div>';
+    }
+  }
+
+  /* ============ 8. profile ============ */
+  function renderProfile() {
+    var u = D.me();
+    if (!u) return;
+    var av = $(".profile-av");
+    if (av) {
+      av.style.setProperty("--h", U.hue(u.handle));
+      var s = av.querySelector("span");
+      if (s) s.textContent = U.initial(u.name);
+    }
+    var nm = $(".profile-name");
+    if (nm) {
+      var svg = nm.querySelector("svg");
+      nm.textContent = u.name;
+      if (svg) nm.appendChild(svg);
+    }
+    var hd = $(".profile-handle");
+    if (hd) hd.textContent = "@" + u.handle + " · " + (u.title || (u.role === "admin" ? "管理员" : "成员"));
+    var bio = $(".profile-bio");
+    if (bio) bio.textContent = u.bio || "还没有写简介，点「编辑资料」补一句。";
+    var st = D.stats(u.id);
+    var stats = $$(".stats .stat");
+    var vals = [st.posts, st.friends, st.likes];
+    stats.forEach(function (node, i) {
+      var v = node.querySelector(".stat-v");
+      if (v && vals[i] != null) { v.textContent = String(vals[i]); v.removeAttribute("data-count"); }
+    });
+    var kLabels = ["动态", "好友", "获赞"];
+    stats.forEach(function (node, i) {
+      var k = node.querySelector(".stat-k");
+      if (k) k.textContent = kLabels[i] || "";
+    });
+    var tabs = $$(".p-tab");
+    if (tabs[0]) tabs[0].textContent = "动态 " + st.posts;
+    if (tabs[1]) tabs[1].textContent = "收藏 " + Object.keys(db().saves[u.id] || {}).length;
+
+    var meStats = $$(".me-card .me-stats > div");
+    if (meStats.length === 3) {
+      var railVals = [st.posts, Object.keys(db().saves[u.id] || {}).length, st.friends];
+      var railKeys = ["动态", "收藏", "好友"];
+      meStats.forEach(function (d, i) { d.innerHTML = "<b>" + (railVals[i] || 0) + "</b>" + railKeys[i]; });
+    }
+
+    var works = $('[data-ppanel="works"] .work-grid');
+    if (works) {
+      var mine = db().posts.filter(function (p) { return p.author === u.id; }).sort(function (a, b) { return b.time - a.time; });
+      works.innerHTML = mine.length
+        ? mine.map(function (p) {
+            return '<article class="work"><div class="work-body"><div class="work-t">' + esc(p.text.slice(0, 42) || "图片动态") +
+              '</div><div class="work-d"><span>' + U.timeAgo(p.time) + "</span><span>" + D.likeCount(p.id) + " 赞</span></div></div></article>";
+          }).join("")
+        : '<div class="empty-inline">还没有发布过动态</div>';
+    }
+    var savedGrid = $('[data-ppanel="saved"] .work-grid');
+    if (savedGrid) {
+      var savedIds = Object.keys(db().saves[u.id] || {});
+      var savedPosts = savedIds.map(function (id) {
+        return db().posts.filter(function (p) { return p.id === id; })[0];
+      }).filter(Boolean);
+      savedGrid.innerHTML = savedPosts.length
+        ? savedPosts.map(function (p) {
+            var a = D.userById(p.author) || { name: "已注销" };
+            return '<article class="work"><div class="work-body"><div class="work-t">' + esc(p.text.slice(0, 42) || "图片动态") +
+              '</div><div class="work-d"><span>' + esc(a.name) + "</span><span>" + U.timeAgo(p.time) + "</span></div></div></article>";
+          }).join("")
+        : '<div class="empty-inline">还没有收藏</div>';
+    }
+    var about = $('[data-ppanel="about"] .card p');
+    if (about) {
+      var joined = new Date(u.joined);
+      about.textContent = (u.bio || "还没有写简介。") + " · " + (u.role === "admin" ? "管理员" : "成员") +
+        " · " + joined.getFullYear() + " 年 " + (joined.getMonth() + 1) + " 月加入。";
+    }
+    var meta = $(".profile-meta");
+    if (meta) meta.innerHTML = '<span><svg class="ico ico-14"><use href="#i-user"/></svg>@' + esc(u.handle) + "</span>" +
+      '<span><svg class="ico ico-14"><use href="#i-clock"/></svg>' + new Date(u.joined).getFullYear() + " 年加入</span>";
+    var cover = $(".cover .ver-label");
+    if (cover) cover.textContent = u.role === "admin" ? "管理员" : "成员";
+  }
+
+  /* ============ 9. nav counters ============ */
+  function syncNav() {
+    var unread = D.unreadTotal();
+    $$('[data-nav="latest"] .nav-count, [data-nav="msg"] .nav-count').forEach(function (n) {
+      n.textContent = String(unread);
+      n.style.display = unread ? "" : "none";
+    });
+    var badge = $('.icon-btn.has-badge[data-nav="latest"]');
+    if (badge) badge.classList.toggle("has-unread", unread > 0);
+    var fcount = $$('[data-nav="friends"] .nav-count');
+    fcount.forEach(function (n) { n.textContent = String(D.peers().length); });
+    var ncount = db().notices.length;
+    $$('[data-nav="notice"] .nav-count').forEach(function (n) {
+      n.textContent = String(ncount);
+      n.style.display = ncount ? "" : "none";
+    });
+  }
+
+  /* ============ 10. settings / admin ============ */
+  function openSettings() {
+    var u = D.me();
+    if (!u) return;
+    var p = D.prefs();
+    var body = el("div");
+    body.innerHTML = '<div class="field"><label>正文字号</label><select>' +
+      '<option value="sm"' + (p.font === "sm" ? " selected" : "") + ">小 12.5px</option>" +
+      '<option value="md"' + (p.font === "md" ? " selected" : "") + ">标准 13.5px</option>" +
+      '<option value="lg"' + (p.font === "lg" ? " selected" : "") + ">大 14.5px</option></select></div>";
+    body.querySelector("select").addEventListener("change", function (e) {
+      D.setPref("font", e.target.value);
+      applyPrefs();
+    });
+    body.appendChild(U.switchRow("紧凑排版", "减少卡片内边距，同屏显示更多动态", p.density === "compact", function (on) {
+      D.setPref("density", on ? "compact" : "normal"); applyPrefs();
+    }));
+    body.appendChild(U.switchRow("减少动效", "关闭入场动画与过渡", p.motion === "off", function (on) {
+      D.setPref("motion", on ? "off" : "on"); applyPrefs();
+    }));
+    body.appendChild(U.switchRow("显示右侧栏", "成员、公告与快捷键提示", p.right !== "off", function (on) {
+      D.setPref("right", on ? "on" : "off"); applyPrefs();
+    }));
+
+    var actions = el("div", "set-actions");
+    actions.innerHTML = '<div class="set-me">' + U.avatar(u, "md") +
+      '<div><div class="set-me-n">' + esc(u.name) + '</div><div class="set-me-h">@' + esc(u.handle) + " · " +
+      (u.role === "admin" ? "管理员" : "成员") + "</div></div></div>";
+    var adminBtn = el("button", "btn btn-primary", "账号管理");
+    adminBtn.addEventListener("click", function () { openAdmin(); });
+    if (D.isAdmin()) actions.appendChild(adminBtn);
+    var out = el("button", "btn btn-ghost", "退出登录");
+    out.addEventListener("click", function () { logout(); });
+    actions.appendChild(out);
+    if (D.isAdmin()) {
+      var wipe = el("button", "btn btn-ghost", "清空本机数据（重置）");
+      wipe.addEventListener("click", function () {
+        U.openModal({
+          title: "清空全部数据",
+          body: "<p style='margin:0;font-size:13px;line-height:1.7;color:var(--t2)'>所有账号、动态、私信与设置都会被删除，回到首次使用的状态。这一步无法撤销。</p>",
+          buttons: [
+            { label: "取消" },
+            { label: "清空", kind: "btn-danger", onClick: function () { D.resetAll(); location.reload(); } }
+          ]
+        });
+      });
+      actions.appendChild(wipe);
+    }
+    body.appendChild(actions);
+    U.openModal({ title: "设置", body: body, buttons: [{ label: "完成", kind: "btn-primary" }] });
+  }
+
+  function openAdmin() {
+    if (!D.isAdmin()) { toast("只有管理员可以管理账号"); return; }
+    var body = el("div");
+    body.innerHTML =
+      '<div class="acc-bar"><div class="acc-hint">共 ' + db().users.length + " 个账号</div>" +
+      '<button class="btn btn-primary" data-new-acc>新建账号</button></div>' +
+      '<div class="acc-list"></div>' +
+      '<div class="acc-notice"><div class="acc-sec">发布公告</div>' +
+      '<div class="field"><input type="text" data-nt-title maxlength="80" placeholder="公告标题"></div>' +
+      '<div class="field"><textarea data-nt-body rows="2" maxlength="600" placeholder="公告内容"></textarea></div>' +
+      '<button class="btn btn-ghost" data-nt-post>发布</button></div>';
+    var m = U.openModal({ title: "账号管理", body: body, wide: true, buttons: [{ label: "完成", kind: "btn-primary" }] });
+
+    function paint() {
+      var list = body.querySelector(".acc-list");
+      list.innerHTML = db().users.map(function (u) {
+        var st = D.stats(u.id);
+        return '<div class="acc-row"><div class="acc-id">' + U.avatar(u, "md") +
+          '<div><div class="acc-n">' + esc(u.name) +
+          (u.role === "admin" ? ' <span class="acc-role">管理员</span>' : "") +
+          (D.me() && D.me().id === u.id ? ' <span class="acc-self">当前</span>' : "") + "</div>" +
+          '<div class="acc-h2">@' + esc(u.handle) + " · " + st.posts + " 条动态</div></div></div>" +
+          '<div class="acc-acts"><button class="btn btn-ghost" data-acc-edit="' + u.id + '">编辑</button>' +
+          '<button class="btn btn-ghost" data-acc-pass="' + u.id + '">改密码</button>' +
+          '<button class="btn btn-ghost" data-acc-del="' + u.id + '">删除</button></div></div>';
+      }).join("");
+      body.querySelector(".acc-hint").textContent = "共 " + db().users.length + " 个账号";
+    }
+    paint();
+
+    function accountForm(user) {
+      var isNew = !user;
+      var f = el("div");
+      f.innerHTML =
+        '<div class="field"><label>昵称</label><input type="text" data-f="name" maxlength="20" placeholder="显示名字"></div>' +
+        '<div class="field"><label>账号（唯一）</label><input type="text" data-f="handle" maxlength="20" placeholder="字母数字，如 linyan"></div>' +
+        (isNew ? '<div class="field"><label>密码</label><input type="password" data-f="pass" placeholder="至少 6 位"></div>' : "") +
+        '<div class="field"><label>身份</label><select data-f="role"><option value="user">普通成员</option><option value="admin">管理员</option></select></div>' +
+        '<div class="field"><label>职位标签</label><input type="text" data-f="title" maxlength="24" placeholder="如 产品设计师"></div>' +
+        '<div class="field"><label>简介</label><textarea data-f="bio" maxlength="140" rows="2"></textarea></div>';
+      if (user) {
+        f.querySelector('[data-f="name"]').value = user.name;
+        f.querySelector('[data-f="handle"]').value = user.handle;
+        f.querySelector('[data-f="role"]').value = user.role;
+        f.querySelector('[data-f="title"]').value = user.title || "";
+        f.querySelector('[data-f="bio"]').value = user.bio || "";
+      }
+      return f;
+    }
+    function submitForm(user) {
+      var wrap = accountForm(user);
+      U.openModal({
+        title: user ? "编辑账号" : "新建账号",
+        body: wrap,
+        buttons: [
+          { label: "取消" },
+          { label: user ? "保存" : "创建", kind: "btn-primary", onClick: function (w) {
+              var v = {};
+              U.$$("[data-f]", w).forEach(function (i) { v[i.dataset.f] = i.value; });
+              var r = user ? D.updateUser(user.id, v) : D.createUser(v);
+              if (r.err) { toast(r.err); return false; }
+              toast(user ? "账号已更新" : "账号已创建");
+              paint();
+              refreshEverywhere();
+              return true;
+          } }
+        ]
+      });
+    }
+    function changePass(user) {
+      var w = el("div");
+      w.innerHTML = '<div class="field"><label>为 ' + esc(user.name) + " 设置新密码</label>" +
+        '<input type="password" data-f="p1" placeholder="至少 6 位"></div>' +
+        '<div class="field"><label>再输一次</label><input type="password" data-f="p2"></div>';
+      U.openModal({
+        title: "重置密码", body: w,
+        buttons: [
+          { label: "取消" },
+          { label: "保存", kind: "btn-primary", onClick: function (box) {
+              var a = box.querySelector('[data-f="p1"]').value;
+              var b = box.querySelector('[data-f="p2"]').value;
+              if (a !== b) { toast("两次输入不一致"); return false; }
+              var r = D.updateUser(user.id, { pass: a });
+              if (r.err) { toast(r.err); return false; }
+              toast("密码已重置");
+              return true;
+          } }
+        ]
+      });
+    }
+
+    body.addEventListener("click", function (e) {
+      var t = e.target.closest("button");
+      if (!t) return;
+      if (t.hasAttribute("data-new-acc")) { submitForm(null); return; }
+      var id;
+      if ((id = t.getAttribute("data-acc-edit"))) { submitForm(D.userById(id)); return; }
+      if ((id = t.getAttribute("data-acc-pass"))) { changePass(D.userById(id)); return; }
+      if ((id = t.getAttribute("data-acc-del"))) {
+        var u = D.userById(id);
+        U.openModal({
+          title: "删除账号",
+          body: "<p style='margin:0;font-size:13px;line-height:1.7;color:var(--t2)'>删除「" + esc(u.name) +
+            "」会同时移除 TA 的动态、评论与私信，无法撤销。</p>",
+          buttons: [
+            { label: "取消" },
+            { label: "删除", kind: "btn-danger", onClick: function () {
+                var r = D.deleteUser(id);
+                if (r.err) { toast(r.err); return false; }
+                toast("账号已删除"); paint(); refreshEverywhere(); return true;
+            } }
+          ]
+        });
+        return;
+      }
+      if (t.hasAttribute("data-nt-post")) {
+        var title = body.querySelector("[data-nt-title]").value;
+        var text = body.querySelector("[data-nt-body]").value;
+        var r2 = D.addNotice(title, text);
+        if (r2.err) { toast(r2.err); return; }
+        body.querySelector("[data-nt-title]").value = "";
+        body.querySelector("[data-nt-body]").value = "";
+        renderNotices();
+        toast("公告已发布");
+      }
+    });
+  }
+
+  /* ============ 11. profile editor ============ */
   function openProfileEditor() {
-    var p = store.profile || {};
-    var cur = $(".profile-name");
-    var curName = p.name || (cur ? cur.textContent : "沈砚舟");
-    var curHandle = p.handle || (($(".profile-handle") || {}).textContent || "@yenzhou").split(" · ")[0];
-    var curBio = p.bio || (($(".profile-bio") || {}).textContent || "");
-    var m = openModal({
-      title: "编辑资料",
-      body: '<div class="field"><label>昵称</label><input type="text" data-f="name" maxlength="20"></div>' +
-        '<div class="field"><label>账号</label><input type="text" data-f="handle" maxlength="24"></div>' +
-        '<div class="field"><label>简介</label><textarea data-f="bio" maxlength="140"></textarea></div>',
+    var u = D.me();
+    if (!u) return;
+    var w = el("div");
+    w.innerHTML =
+      '<div class="field"><label>昵称</label><input type="text" data-f="name" maxlength="20"></div>' +
+      '<div class="field"><label>账号</label><input type="text" data-f="handle" maxlength="20"></div>' +
+      '<div class="field"><label>职位标签</label><input type="text" data-f="title" maxlength="24" placeholder="如 产品设计师"></div>' +
+      '<div class="field"><label>简介</label><textarea data-f="bio" maxlength="140" rows="3"></textarea></div>' +
+      (D.isAdmin() ? '<div class="field"><label>新密码（留空不改）</label><input type="password" data-f="pass" placeholder="至少 6 位"></div>' : "");
+    w.querySelector('[data-f="name"]').value = u.name;
+    w.querySelector('[data-f="handle"]').value = u.handle;
+    w.querySelector('[data-f="title"]').value = u.title || "";
+    w.querySelector('[data-f="bio"]').value = u.bio || "";
+    U.openModal({
+      title: "编辑资料", body: w,
       buttons: [
         { label: "取消" },
-        { label: "保存", kind: "btn-primary", onClick: function (w) {
+        { label: "保存", kind: "btn-primary", onClick: function (box) {
             var v = {};
-            $$("[data-f]", w).forEach(function (i) { v[i.dataset.f] = i.value.trim(); });
-            if (!v.name) { toast("昵称不能为空"); return false; }
-            store.profile = v;
-            persist();
-            renderProfile();
-            toast("资料已更新");
+            U.$$("[data-f]", box).forEach(function (i) { v[i.dataset.f] = i.value.trim(); });
+            if (!v.pass) delete v.pass;
+            var r = D.updateUser(u.id, v);
+            if (r.err) { toast(r.err); return false; }
+            applyIdentity(); renderProfile(); renderFeed(); toast("资料已更新");
+            return true;
         } }
       ]
     });
-    $('[data-f="name"]', m.el).value = curName.trim();
-    $('[data-f="handle"]', m.el).value = curHandle.trim();
-    $('[data-f="bio"]', m.el).value = curBio.trim();
   }
 
-  function renderProfile() {
-    var p = store.profile || {};
-    if (p.name) {
-      var nm = $(".profile-name");
-      if (nm) {
-        var svg = nm.querySelector("svg");
-        nm.textContent = p.name;
-        if (svg) nm.appendChild(svg);
-      }
-      var av = $(".profile-av span");
-      if (av) av.textContent = p.name.charAt(0);
-      var me = $(".me-name");
-      if (me) me.textContent = p.name;
-      var c = $(".composer .av span");
-      if (c) c.textContent = p.name.charAt(0);
-    }
-    if (p.handle) {
-      var h = $(".profile-handle");
-      if (h) h.textContent = p.handle + " · 独立设计师";
-      var ms = $(".me-sub");
-      if (ms) ms.textContent = p.handle + " · 独立设计师";
-    }
-    if (p.bio) {
-      var b = $(".profile-bio");
-      if (b) b.textContent = p.bio;
-    }
+  /* ============ 12. gate (setup / login) ============ */
+  function removeGate() {
+    var g = $("#elanGate");
+    if (g) g.remove();
   }
-
-  document.addEventListener("click", function (e) {
-    var act = e.target.closest("[data-act]");
-    if (!act) return;
-    var kind = act.dataset.act;
-    if (kind === "settings") { e.preventDefault(); e.stopPropagation(); openSettings(); }
-    else if (kind === "edit") { e.preventDefault(); e.stopPropagation(); openProfileEditor(); }
-    else if (kind === "share") { e.preventDefault(); e.stopPropagation(); copyText(location.href, "主页链接已复制"); }
-  }, true);
-
-  /* ---------- direct messages ---------- */
-  var chatEl = null, chatFriend = null;
-  function ensureChat() {
-    if (chatEl) return chatEl;
-    chatEl = document.createElement("aside");
-    chatEl.className = "chat";
-    chatEl.setAttribute("aria-hidden", "true");
-    chatEl.innerHTML =
-      '<div class="chat-head"><div style="flex:1;min-width:0"><h3 data-chat-name>对话</h3>' +
-      '<div class="sub" data-chat-sub>私信</div></div>' +
-      '<button class="icon-btn" data-chat-close aria-label="关闭"><svg class="ico"><use href="#i-x"/></svg></button></div>' +
-      '<div class="chat-log" data-chat-log></div>' +
-      '<div class="chat-foot"><input type="text" placeholder="输入消息，回车发送…" aria-label="消息内容">' +
-      '<button class="btn btn-primary" data-chat-send>发送</button></div>';
-    document.body.appendChild(chatEl);
-    $("[data-chat-close]", chatEl).addEventListener("click", closeChat);
-    $("[data-chat-send]", chatEl).addEventListener("click", sendChat);
-    $("input", chatEl).addEventListener("keydown", function (e) {
-      if (e.key === "Enter") { e.preventDefault(); sendChat(); }
+  function showGate() {
+    removeGate();
+    var first = db().users.length === 0;
+    var gate = el("div", "gate");
+    gate.id = "elanGate";
+    var accounts = first ? [] : db().users.slice().sort(function (a, b) {
+      return (b.lastLogin || b.joined) - (a.lastLogin || a.joined);
     });
-    return chatEl;
-  }
-  function renderChat() {
-    if (!chatEl || !chatFriend) return;
-    var log = $("[data-chat-log]", chatEl);
-    var list = store.dms[chatFriend] || [];
-    log.innerHTML = list.length
-      ? list.map(function (m) {
-          return '<div class="bub ' + (m.from === "me" ? "me" : "them") + '">' + esc(m.text) + "</div>" +
-            '<div class="bub-t" style="align-self:' + (m.from === "me" ? "flex-end" : "flex-start") + '">' + esc(m.time) + "</div>";
-        }).join("")
-      : '<div style="font-size:12px;color:var(--t3)">开始和 TA 的第一次对话。</div>';
-    log.scrollTop = log.scrollHeight;
-  }
-  function openChat(name, seedText) {
-    ensureChat();
-    chatFriend = name;
-    store.dms[name] = store.dms[name] || [];
-    if (!store.dms[name].length && seedText) {
-      store.dms[name].push({ from: "them", text: seedText, time: "刚刚" });
-      persist();
-    }
-    $("[data-chat-name]", chatEl).textContent = name;
-    $("[data-chat-sub]", chatEl).textContent = "私信 · 在线";
-    chatEl.classList.add("is-on");
-    chatEl.setAttribute("aria-hidden", "false");
-    renderChat();
-    setTimeout(function () { $(".chat-foot input", chatEl).focus(); }, 220);
-  }
-  function closeChat() {
-    if (!chatEl) return;
-    chatEl.classList.remove("is-on");
-    chatEl.setAttribute("aria-hidden", "true");
-  }
-  function sendChat() {
-    if (!chatEl || !chatFriend) return;
-    var input = $(".chat-foot input", chatEl);
-    var text = (input.value || "").trim();
-    if (!text) return;
-    store.dms[chatFriend].push({ from: "me", text: text, time: hhmm() });
-    persist();
-    input.value = "";
-    renderChat();
-    var friend = chatFriend;
-    setTimeout(function () {
-      if (chatFriend !== friend) return;
-      store.dms[friend].push({ from: "them", text: "收到，我晚点回你。", time: hhmm() });
-      persist();
-      renderChat();
-    }, 1100);
-  }
-  document.addEventListener("click", function (e) {
-    var dm = e.target.closest("[data-dm]");
-    if (!dm) return;
-    e.preventDefault();
-    e.stopPropagation();
-    var nameEl = $("#dName"), msgEl = $("#dMsg"), closeBtn = $("#drawerClose");
-    var name = nameEl ? nameEl.textContent : "好友";
-    var seed = msgEl ? msgEl.textContent : "";
-    if (closeBtn) closeBtn.click();
-    openChat(name, seed);
-  }, true);
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && chatEl && chatEl.classList.contains("is-on")) closeChat();
-  });
+    var grid = accounts.map(function (u) {
+      return '<button class="acc-item" data-acc="' + u.id + '">' + U.avatar(u, "lg") +
+        '<span class="acc-name">' + esc(u.name) + "</span>" +
+        '<span class="acc-h">@' + esc(u.handle) + "</span></button>";
+    }).join("");
+    gate.innerHTML =
+      '<div class="gate-card">' +
+        '<div class="gate-brand"><span class="gate-mark">É</span><span>Élan</span></div>' +
+        '<h2 class="gate-title">' + (first ? "创建管理员账号" : "选择账号登录") + "</h2>" +
+        '<p class="gate-sub">' + (first
+          ? "这是这台设备上的第一个账号，它会成为管理员，可以创建和管理其他账号。"
+          : "所有账号、动态与私信都保存在本机浏览器里，换设备不会同步。") + "</p>" +
+        (first ? "" : '<div class="acc-grid">' + grid + "</div>") +
+        (first
+          ? '<div class="field"><label>昵称</label><input type="text" data-g="name" maxlength="20" value="管理员"></div>' +
+            '<div class="field"><label>账号</label><input type="text" data-g="handle" maxlength="20" value="admin"></div>'
+          : '<input type="hidden" data-g="handle">') +
+        '<div class="field"><label>密码</label><input type="password" data-g="pass" placeholder="' +
+          (first ? "至少 6 位" : "输入密码") + '" autocomplete="current-password"></div>' +
+        '<div class="gate-err" role="alert"></div>' +
+        '<button class="btn btn-primary gate-go">' + (first ? "创建并进入" : "进入") + "</button>" +
+      "</div>";
+    document.body.appendChild(gate);
+    requestAnimationFrame(function () { gate.classList.add("is-on"); });
 
-  /* ---------- restore persisted state ---------- */
-  function restore() {
-    if (!feed) feed = $("#feed");
-    (store.myPosts || []).slice().reverse().forEach(function (p) { insertPost(p, false); });
-    $$("#feed .post").forEach(function (post) {
-      var key = postKey(post);
-      if (store.deleted.indexOf(key) !== -1) { post.remove(); return; }
-      if (store.hidden.indexOf(key) !== -1) { post.style.display = "none"; return; }
-      if (store.likes[key]) {
-        var like = post.querySelector(".act.like");
-        if (like && !like.classList.contains("is-on")) {
-          like.classList.add("is-on");
-          like.dataset.n = String((Number(like.dataset.n) || 0) + 1);
-          var s1 = like.querySelector("span");
-          if (s1) s1.textContent = like.dataset.n;
-        }
-      }
-      if (store.saves[key]) {
-        var save = post.querySelector(".act.save");
-        if (save) save.classList.add("is-on");
-      }
-      syncCommentCount(post);
-    });
-    renderProfile();
-  }
-  restore();
+    var pass = gate.querySelector('[data-g="pass"]');
+    var err = gate.querySelector(".gate-err");
 
-  if ("MutationObserver" in window && feed) {
-    new MutationObserver(function (records) {
-      records.forEach(function (r) {
-        Array.prototype.slice.call(r.addedNodes).forEach(function (n) {
-          if (n.nodeType === 1 && n.classList && n.classList.contains("post")) syncCommentCount(n);
-        });
+    if (accounts.length) state.selected = accounts[0].id;
+    gate.querySelectorAll(".acc-item").forEach(function (b) {
+      b.addEventListener("click", function () {
+        state.selected = b.dataset.acc;
+        gate.querySelectorAll(".acc-item").forEach(function (x) { x.classList.toggle("is-on", x === b); });
+        pass.focus();
       });
-    }).observe(feed, { childList: true });
+    });
+    var sel = gate.querySelector('.acc-item[data-acc="' + state.selected + '"]');
+    if (sel) sel.classList.add("is-on");
+
+    function submit() {
+      err.textContent = "";
+      if (first) {
+        var r = D.createUser({
+          name: gate.querySelector('[data-g="name"]').value,
+          handle: gate.querySelector('[data-g="handle"]').value,
+          pass: pass.value, role: "admin"
+        });
+        if (r.err) { err.textContent = r.err; return; }
+        D.login(r.user.handle, pass.value);
+        enter();
+        return;
+      }
+      var u = D.userById(state.selected);
+      if (!u) { err.textContent = "请选择一个账号"; return; }
+      var lr = D.login(u.handle, pass.value);
+      if (lr.err) { err.textContent = lr.err; pass.select(); return; }
+      enter();
+    }
+    gate.querySelector(".gate-go").addEventListener("click", submit);
+    pass.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); submit(); } });
+    gate.querySelectorAll("input").forEach(function (i) {
+      i.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); submit(); } });
+    });
   }
+
+  function enter() {
+    removeGate();
+    start();
+    toast("欢迎，" + D.me().name);
+  }
+  function logout() {
+    D.logout();
+    state.peer = null;
+    U.closePop();
+    $$(".ms").forEach(function (m) { m.remove(); });
+    showGate();
+  }
+
+  /* ============ 13. wiring ============ */
+  function refreshEverywhere() {
+    applyIdentity();
+    renderFeed();
+    renderIM();
+    renderMembers();
+    renderRailMembers();
+    renderNotices();
+    renderProfile();
+    syncNav();
+  }
+
+  function start() {
+    applyIdentity();
+    refreshEverywhere();
+  }
+
+  /* nav: let the page switch views, then refresh our data */
+  document.addEventListener("click", function (e) {
+    var nav = e.target.closest("[data-nav]");
+    if (!nav) return;
+    setTimeout(function () {
+      renderIM(); renderMembers(); renderRailMembers(); renderNotices(); renderProfile(); syncNav();
+    }, 0);
+  }, true);
+
+  document.addEventListener("click", function (e) {
+    if (!D.me()) return;
+
+    if (e.target.closest("#publishBtn")) { e.preventDefault(); e.stopPropagation(); publish(); return; }
+
+    var tool = e.target.closest('.composer-tools [data-act="attach"]');
+    if (tool) {
+      e.preventDefault(); e.stopPropagation();
+      var icon = tool.querySelector("use");
+      var href = icon ? icon.getAttribute("href") : "";
+      if (href === "#i-image") { pickImages(); return; }
+      if (href === "#i-globe") {
+        U.openModal({
+          title: "插入链接",
+          body: '<div class="field"><label>链接地址</label><input type="text" placeholder="https://" value="https://"></div>',
+          buttons: [{ label: "取消" }, { label: "插入", kind: "btn-primary", onClick: function (w) {
+            var v = w.querySelector("input").value.trim();
+            if (!v || v === "https://") { toast("请输入链接"); return false; }
+            var ta = $("#composerText");
+            ta.value += (ta.value ? "\n" : "") + v;
+            ta.dispatchEvent(new Event("input", { bubbles: true }));
+            return true;
+          } }]
+        });
+        return;
+      }
+      var ta2 = $("#composerText");
+      if (ta2) {
+        ta2.value += (ta2.value ? "\n" : "") + "［数据图表］";
+        ta2.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+      toast("已插入图表占位");
+      return;
+    }
+
+    /* feed actions */
+    var like = e.target.closest("#feed .act.like");
+    if (like) {
+      e.preventDefault(); e.stopPropagation();
+      var post = like.closest(".post");
+      var on = D.toggleLike(post.dataset.id);
+      like.classList.toggle("is-on", on);
+      var n = D.likeCount(post.dataset.id);
+      like.dataset.n = String(n);
+      like.querySelector("span").textContent = String(n);
+      renderProfile();
+      return;
+    }
+    var save = e.target.closest("#feed .act.save");
+    if (save) {
+      e.preventDefault(); e.stopPropagation();
+      var p2 = save.closest(".post");
+      var son = D.toggleSave(p2.dataset.id);
+      save.classList.toggle("is-on", son);
+      toast(son ? "已收藏" : "已取消收藏");
+      renderProfile();
+      return;
+    }
+    var cmt = e.target.closest("#feed .act.cmt-toggle");
+    if (cmt) {
+      e.preventDefault(); e.stopPropagation();
+      var post3 = cmt.closest(".post");
+      var wrap = post3.querySelector(".cmt-wrap");
+      if (wrap) {
+        if (wrap.classList.contains("is-on")) { wrap.classList.remove("is-on"); setTimeout(function () { wrap.remove(); }, 200); }
+        else wrap.classList.add("is-on");
+      } else {
+        post3.appendChild(commentsBlock(post3.dataset.id));
+        post3.querySelector(".cmt-wrap input").focus();
+      }
+      return;
+    }
+    var menuBtn = e.target.closest("#feed .act.more, #feed .post-head .icon-btn");
+    if (menuBtn) {
+      e.preventDefault(); e.stopPropagation();
+      var node = menuBtn.closest(".post");
+      var id = node.dataset.id;
+      var author = db().posts.filter(function (x) { return x.id === id; })[0];
+      var mine = author && D.me() && author.author === D.me().id;
+      U.popover(menuBtn, [
+        { label: "复制链接", icon: "i-globe", onClick: function () {
+            U.copy(location.href.split("#")[0] + "#" + id, "动态链接已复制");
+        } },
+        { label: "收藏这条", icon: "i-bookmark", onClick: function () {
+            D.toggleSave(id); renderProfile(); toast("收藏状态已更新");
+        } },
+        { label: "隐藏这条", icon: "i-x", onClick: function () {
+            D.hidePost(id); node.style.opacity = "0";
+            setTimeout(function () { renderFeed(); }, 220); toast("已隐藏");
+        } },
+        { label: mine || D.isAdmin() ? "删除动态" : "举报这条", icon: "i-trash", danger: true, onClick: function () {
+            if (!(mine || D.isAdmin())) { toast("已记录举报"); return; }
+            var r = D.removePost(id);
+            if (r.err) { toast(r.err); return; }
+            node.style.opacity = "0";
+            setTimeout(function () { renderFeed(); renderProfile(); }, 220);
+            toast("动态已删除");
+        } }
+      ]);
+      return;
+    }
+
+    /* im */
+    var row = e.target.closest(".im-row");
+    if (row) { e.preventDefault(); openThread(row.dataset.peer); return; }
+    if (e.target.closest("[data-im-close]")) {
+      state.peer = null;
+      var box = imHost();
+      if (box) box.classList.remove("is-thread");
+      renderThread(); renderIMRows();
+      return;
+    }
+    var dmBtn = e.target.closest("[data-mem-dm]");
+    if (dmBtn) {
+      e.preventDefault(); e.stopPropagation();
+      openThread(dmBtn.getAttribute("data-mem-dm"));
+      var rail = $('.rail-btn[data-nav="latest"]');
+      var navBtn = $('.nav-item[data-nav="latest"]') || $('[data-nav="latest"]');
+      if (navBtn) navBtn.click();
+      return;
+    }
+    var editMem = e.target.closest("[data-mem-edit]");
+    if (editMem) { e.preventDefault(); e.stopPropagation(); openAdmin(); return; }
+
+    /* [data-act] owned by us */
+    var act = e.target.closest("[data-act]");
+    if (act) {
+      var kind = act.dataset.act;
+      if (kind === "settings") { e.preventDefault(); e.stopPropagation(); openSettings(); return; }
+      if (kind === "edit") { e.preventDefault(); e.stopPropagation(); openProfileEditor(); return; }
+      if (kind === "share") { e.preventDefault(); e.stopPropagation(); U.copy(location.href, "主页链接已复制"); return; }
+      if (kind === "compose") {
+        e.preventDefault(); e.stopPropagation();
+        var n2 = $('.nav-item[data-nav="home"], [data-nav="home"]');
+        if (n2) n2.click();
+        setTimeout(function () { var t = $("#composerText"); if (t) t.focus(); }, 60);
+        return;
+      }
+    }
+
+    var logoutBtn = e.target.closest("[data-logout]");
+    if (logoutBtn) { logoutBtn.click(); }
+  }, true);
+
+  document.addEventListener("keydown", function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && document.activeElement === $("#composerText")) {
+      e.preventDefault(); e.stopPropagation(); publish();
+    }
+  }, true);
+
+  /* ---------- search: own index, own panel ---------- */
+  function wireSearch() {
+    var input = $("#searchInput");
+    if (!input) return;
+    var fresh = input.cloneNode(true);
+    fresh.value = "";
+    input.replaceWith(fresh);
+    var panel = $("#searchPanel");
+    var cursor = -1, rows = [];
+
+    function render() {
+      var q = fresh.value.trim().toLowerCase();
+      if (!q) { panel.classList.remove("is-open"); panel.innerHTML = ""; rows = []; cursor = -1; return; }
+      var users = db().users.filter(function (u) {
+        return !D.me() || u.id !== D.me().id;
+      }).filter(function (u) {
+        return (u.name + " " + u.handle + " " + (u.bio || "")).toLowerCase().indexOf(q) !== -1;
+      }).slice(0, 4);
+      var posts = db().posts.filter(function (p) {
+        var a = D.userById(p.author);
+        return (p.text + " " + (a ? a.name : "")).toLowerCase().indexOf(q) !== -1;
+      }).sort(function (a, b) { return b.time - a.time; }).slice(0, 5);
+
+      rows = [];
+      var html = "";
+      if (!users.length && !posts.length) {
+        html = '<div class="s-empty">没有找到与「' + esc(fresh.value) + '」相关的内容</div>';
+      } else {
+        if (users.length) {
+          html += '<div class="s-group">账号</div>';
+          users.forEach(function (u) {
+            rows.push({ kind: "user", id: u.id });
+            html += '<button class="s-row" data-i="' + (rows.length - 1) + '">' + U.avatar(u, "sm") +
+              '<span class="s-row-t">' + esc(u.name) + " <i>@" + esc(u.handle) + "</i></span></button>";
+          });
+        }
+        if (posts.length) {
+          html += '<div class="s-group">动态</div>';
+          posts.forEach(function (p) {
+            rows.push({ kind: "post", id: p.id });
+            var label = p.text.length > 34 ? p.text.slice(0, 34) + "…" : (p.text || "图片动态");
+            html += '<button class="s-row" data-i="' + (rows.length - 1) + '"><span class="s-row-t">' +
+              esc(label) + "</span></button>";
+          });
+        }
+        html += '<div class="s-group">↑ ↓ 选择 · Enter 打开</div>';
+      }
+      panel.innerHTML = html;
+      panel.classList.add("is-open");
+    }
+    fresh.addEventListener("input", render);
+    fresh.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { fresh.blur(); panel.classList.remove("is-open"); return; }
+      if (!rows.length) return;
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        cursor = (cursor + (e.key === "ArrowDown" ? 1 : -1) + rows.length) % rows.length;
+        $$(".s-row", panel).forEach(function (r, i) { r.classList.toggle("is-on", i === cursor); });
+        return;
+      }
+      if (e.key === "Enter") {
+        e.preventDefault(); e.stopPropagation();
+        var pick = rows[cursor < 0 ? 0 : cursor];
+        if (!pick) return;
+        if (pick.kind === "user") openThread(pick.id);
+        else {
+          var navHome = $('[data-nav="home"]');
+          if (navHome) navHome.click();
+          setTimeout(function () {
+            var node = document.getElementById(pick.id);
+            if (node) {
+              node.scrollIntoView({ behavior: "smooth", block: "center" });
+              node.classList.add("is-flash");
+              setTimeout(function () { node.classList.remove("is-flash"); }, 1200);
+            }
+          }, 80);
+        }
+        panel.classList.remove("is-open");
+        fresh.blur();
+      }
+    });
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "/" && !/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || "")) {
+      e.preventDefault();
+      var i = $("#searchInput");
+      if (i) i.focus();
+    }
+  }, true);
+
+  /* ---------- boot ---------- */
+  function boot() {
+    stripDemo();
+    syncChips();
+    wireSearch();
+    var u = D.me();
+    if (db().users.length === 0 || !u) { showGate(); return; }
+    start();
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+
+  window.ElanApp = { boot: boot, refresh: refreshEverywhere, openAdmin: openAdmin, logout: logout };
 })();
 
 </script>

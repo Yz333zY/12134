@@ -6,16 +6,18 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const srcName = 'elan-social.original.html';
 const outName = 'elan-social.html';
 
+/* enhancement layer, injected in this order */
+const CSS_FILES = ['elan-enhance.css', 'elan-accounts.css'];
+const JS_FILES = ['elan-ui.js', 'elan-data.js', 'elan-app.js'];
+
 const src = path.join(here, srcName);
 const out = path.join(here, outName);
-const css = readFileSync(path.join(here, 'elan-enhance.css'), 'utf8');
-const js = readFileSync(path.join(here, 'elan-enhance.js'), 'utf8');
 
 if (!existsSync(src)) throw new Error(`missing ${srcName}`);
 let html = readFileSync(src, 'utf8');
 if (html.includes('elan-enhance:start')) throw new Error(`${srcName} already contains the enhancement layer`);
 
-// 1. make the CDN font stylesheets non-blocking: a hung CDN must not delay first paint or script execution
+/* 1. CDN font stylesheets must not block first paint or script execution */
 const fonts = [
   'https://cdn.jsdelivr.net/npm/@fontsource-variable/manrope@5.2.8/index.css',
   'https://cdn.jsdelivr.net/npm/@fontsource-variable/noto-sans-sc@5.2.10/index.css',
@@ -27,7 +29,10 @@ for (const url of fonts) {
   if (html.includes(before)) { html = html.split(before).join(after); fontPatched += 1; }
 }
 
-// 2. append the enhancement layer before </body>
+/* 2. layer css + js before </body> */
+const css = CSS_FILES.map((f) => readFileSync(path.join(here, f), 'utf8')).join('\n');
+const js = JS_FILES.map((f) => readFileSync(path.join(here, f), 'utf8')).join('\n');
+
 const block =
   '<style id="elan-enhance-css">\n' + css + '\n</style>\n' +
   '<script id="elan-enhance-js">\n' + js + '\n</script>\n';
